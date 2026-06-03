@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Ресторан "Вкус & Уют" | Полная версия</title>
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Swiper JS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <!-- Flatpickr -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #fffaf5; color: #2c2418; scroll-behavior: smooth; overflow-x: hidden; }
@@ -35,45 +35,18 @@
             padding: 0.8rem 2rem;
             border-bottom: 1px solid rgba(184,124,79,0.25);
         }
-        /* Контейнер для левой группы кнопок */
-        .tabs-left {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.5rem;
-            flex: 1;
-        }
-        /* Кнопка админ-панели справа */
-        .admin-tab-wrapper {
-            margin-left: auto;
-        }
+        .tabs-left { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; flex: 1; }
+        .admin-tab-wrapper { margin-left: auto; }
         .tab-btn {
-            background: transparent;
-            border: none;
-            font-size: 0.95rem;
-            font-weight: 600;
-            padding: 0.6rem 1.3rem;
-            border-radius: 40px;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: #5c4b32;
+            background: transparent; border: none; font-size: 0.95rem; font-weight: 600;
+            padding: 0.6rem 1.3rem; border-radius: 40px; cursor: pointer; transition: all 0.3s; color: #5c4b32;
         }
         .tab-btn i { margin-right: 8px; }
         .tab-btn.active {
-            background: #b87c4f;
-            color: white;
-            box-shadow: 0 6px 14px rgba(184,124,79,0.35);
-            transform: translateY(-2px);
+            background: #b87c4f; color: white; box-shadow: 0 6px 14px rgba(184,124,79,0.35); transform: translateY(-2px);
         }
-        /* Специальный стиль для кнопки админки */
-        .admin-tab {
-            background: rgba(184,124,79,0.1);
-            border: 1px solid rgba(184,124,79,0.3);
-        }
-        .admin-tab.active {
-            background: #c25a3a;
-            border-color: #c25a3a;
-        }
+        .admin-tab { background: rgba(184,124,79,0.1); border: 1px solid rgba(184,124,79,0.3); }
+        .admin-tab.active { background: #c25a3a; border-color: #c25a3a; }
         .tab-content { display: none; padding: 2rem 1.5rem; animation: fadeUp 0.5s ease; }
         .tab-content.active-tab { display: block; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(20px);} to { opacity: 1; transform: translateY(0);} }
@@ -81,73 +54,19 @@
 
         /* Главная */
         .hero {
-            position: relative;
-            min-height: 75vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            border-radius: 0 0 40px 40px;
-            overflow: hidden;
-            margin-bottom: 2rem;
+            position: relative; min-height: 75vh; display: flex; align-items: center;
+            justify-content: center; text-align: center; border-radius: 0 0 40px 40px; overflow: hidden; margin-bottom: 2rem;
         }
-        .hero-video-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: 0;
-        }
-        .hero-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(0,0,0,0.45), rgba(0,0,0,0.3));
-            z-index: 1;
-        }
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            color: white;
-            text-shadow: 0 2px 15px rgba(0,0,0,0.3);
-            max-width: 800px;
-            padding: 2rem;
-        }
+        .hero-video-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(0,0,0,0.45), rgba(0,0,0,0.3)); z-index: 1; }
+        .hero-content { position: relative; z-index: 2; color: white; text-shadow: 0 2px 15px rgba(0,0,0,0.3); max-width: 800px; padding: 2rem; }
         .hero-title { font-size: 4rem; font-weight: 800; margin-bottom: 1rem; animation: fadeInDown 0.9s ease; }
         .hero-subtitle { font-size: 1.3rem; margin-bottom: 2rem; }
-        .hero-btn {
-            background: #b87c4f;
-            padding: 14px 32px;
-            border-radius: 50px;
-            font-weight: bold;
-            display: inline-block;
-            color: white;
-            cursor: pointer;
-            border: none;
-            transition: all 0.3s;
-        }
+        .hero-btn { background: #b87c4f; padding: 14px 32px; border-radius: 50px; font-weight: bold; display: inline-block; color: white; cursor: pointer; border: none; transition: all 0.3s; }
         .hero-btn:hover { transform: scale(1.05); background: #9b623c; }
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px);} to { opacity: 1; transform: translateY(0);} }
-        .features {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 2rem;
-            margin: 3rem 0;
-        }
-        .feature-card {
-            background: white;
-            border-radius: 28px;
-            padding: 1.5rem;
-            text-align: center;
-            width: 220px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            transition: all 0.3s;
-        }
+        .features { display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; margin: 3rem 0; }
+        .feature-card { background: white; border-radius: 28px; padding: 1.5rem; text-align: center; width: 220px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); transition: all 0.3s; }
         .feature-card i { font-size: 2.5rem; color: #b87c4f; margin-bottom: 1rem; }
         .feature-card:hover { transform: translateY(-8px); }
 
@@ -165,62 +84,6 @@
         .menu-content { padding: 1.3rem 1.5rem 1.5rem; }
         .menu-price { font-size: 1.5rem; font-weight: 800; color: #b87c4f; }
 
-        /* Акции / Новости / Спецпредложения */
-        .promo-header { background: linear-gradient(135deg, #b87c4f 0%, #e2a072 100%); border-radius: 32px; padding: 2.5rem; text-align: center; color: white; margin-bottom: 2rem; }
-
-        /* Внутренние табы секции */
-        .news-tabs { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 2rem; justify-content: center; }
-        .news-tab-btn { background: transparent; border: 2px solid #e2d4c8; padding: 0.6rem 1.6rem; border-radius: 40px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.25s; color: #5c4b32; font-family: 'Inter', sans-serif; }
-        .news-tab-btn i { margin-right: 7px; }
-        .news-tab-btn.active-news-tab, .news-tab-btn:hover { background: #b87c4f; border-color: #b87c4f; color: white; }
-        .news-section { display: none; }
-        .news-section.active-news-section { display: block; animation: fadeUp 0.4s ease; }
-
-        /* Карточки акций */
-        .promo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 2rem; }
-        .promo-card { background: white; border-radius: 28px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.08); transition: all 0.4s; position: relative; }
-        .promo-card:hover { transform: translateY(-10px); box-shadow: 0 25px 50px rgba(0,0,0,0.13); }
-        .promo-img { height: 180px; overflow: hidden; }
-        .promo-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
-        .promo-card:hover .promo-img img { transform: scale(1.06); }
-        .promo-content { padding: 1.5rem; }
-        .promo-badge { display: inline-block; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; padding: 3px 10px; border-radius: 20px; margin-bottom: 0.6rem; }
-        .promo-badge.badge-promo { background: #fde8d8; color: #b87c4f; }
-        .promo-badge.badge-offer { background: #d8f0e8; color: #2a7a5a; }
-        .promo-code { display: inline-block; background: #f5ede5; color: #b87c4f; font-weight: 700; padding: 0.35rem 1rem; border-radius: 20px; margin-top: 0.7rem; font-size: 0.88rem; letter-spacing: 0.5px; cursor: pointer; transition: all 0.2s; }
-        .promo-code:hover { background: #b87c4f; color: white; }
-        .promo-date-badge { font-size: 0.78rem; color: #9b8a76; margin-top: 0.5rem; }
-
-        /* Карточки новостей */
-        .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 2rem; }
-        .news-card { background: white; border-radius: 28px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.07); transition: all 0.35s; display: flex; flex-direction: column; }
-        .news-card:hover { transform: translateY(-8px); box-shadow: 0 22px 45px rgba(0,0,0,0.12); }
-        .news-card-img { height: 190px; overflow: hidden; position: relative; }
-        .news-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
-        .news-card:hover .news-card-img img { transform: scale(1.05); }
-        .news-card-tag { position: absolute; top: 12px; left: 12px; background: #2c2418; color: white; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; padding: 4px 12px; border-radius: 20px; }
-        .news-card-body { padding: 1.4rem 1.6rem 1.6rem; flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
-        .news-card-date { font-size: 0.78rem; color: #b87c4f; font-weight: 600; }
-        .news-card-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: #2c2418; line-height: 1.35; }
-        .news-card-text { font-size: 0.88rem; color: #6b5c4a; line-height: 1.6; flex: 1; }
-        .news-read-more { display: inline-flex; align-items: center; gap: 6px; color: #b87c4f; font-weight: 600; font-size: 0.88rem; margin-top: 0.5rem; cursor: default; }
-
-        /* Карточки спецпредложений */
-        .offer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 2rem; }
-        .offer-card { background: white; border-radius: 28px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.07); transition: all 0.35s; position: relative; }
-        .offer-card:hover { transform: translateY(-8px); box-shadow: 0 22px 45px rgba(0,0,0,0.12); }
-        .offer-card-header { padding: 1.8rem 1.8rem 1rem; background: linear-gradient(135deg, #fcf6ef 0%, #fff8f2 100%); position: relative; }
-        .offer-icon { width: 56px; height: 56px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(184,124,79,0.2); margin-bottom: 1rem; }
-        .offer-icon i { font-size: 1.5rem; color: #b87c4f; }
-        .offer-title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: #2c2418; margin-bottom: 0.3rem; }
-        .offer-subtitle { font-size: 0.85rem; color: #8a7a68; }
-        .offer-card-body { padding: 1rem 1.8rem 1.6rem; }
-        .offer-discount { font-size: 2.2rem; font-weight: 800; color: #b87c4f; font-family: 'Playfair Display', serif; line-height: 1; }
-        .offer-discount span { font-size: 1rem; color: #8a7a68; font-family: 'Inter', sans-serif; font-weight: 500; }
-        .offer-desc { font-size: 0.88rem; color: #6b5c4a; margin: 0.5rem 0 1rem; line-height: 1.5; }
-        .offer-condition { background: #f5ede5; border-radius: 14px; padding: 0.6rem 1rem; font-size: 0.8rem; color: #7a5c3a; }
-        .offer-condition i { margin-right: 5px; color: #b87c4f; }
-
         /* Бронирование */
         .booking-hero { background: linear-gradient(135deg, #2c2418 0%, #4a3828 100%); border-radius: 32px; padding: 2rem; margin-bottom: 2rem; text-align: center; color: white; }
         .booking-card { background: white; border-radius: 32px; box-shadow: 0 25px 45px rgba(0,0,0,0.1); display: flex; flex-wrap: wrap; overflow: hidden; }
@@ -235,58 +98,20 @@
         .submit-btn { background: #b87c4f; width: 100%; padding: 16px; font-size: 1rem; font-weight: 700; border-radius: 40px; border: none; color: white; cursor: pointer; transition: 0.2s; }
         .submit-btn:hover { background: #9b623c; transform: translateY(-2px); }
 
-        /* Галерея */
-        .gallery-filters { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 2rem; justify-content: center; }
-        .gallery-filter-btn { background: transparent; border: 1.5px solid #e2d4c8; padding: 0.6rem 1.8rem; border-radius: 40px; font-weight: 600; cursor: pointer; transition: all 0.2s; color: #5c4b32; }
-        .gallery-filter-btn.active-gallery-filter, .gallery-filter-btn:hover { background: #b87c4f; border-color: #b87c4f; color: white; }
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.8rem; }
-        .gallery-item { position: relative; border-radius: 24px; overflow: hidden; cursor: pointer; aspect-ratio: 1 / 0.9; box-shadow: 0 10px 25px rgba(0,0,0,0.08); transition: all 0.3s; }
-        .gallery-item:hover { transform: translateY(-8px); }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
-        .gallery-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); padding: 1.5rem; color: white; transform: translateY(100%); transition: transform 0.3s; }
-        .gallery-item:hover .gallery-overlay { transform: translateY(0); }
-
-        /* Контакты */
-        .contacts-hero { background: linear-gradient(135deg, #2c2418 0%, #4a3828 100%); border-radius: 32px; padding: 2.5rem; text-align: center; color: white; margin-bottom: 2.5rem; }
-        .contacts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-bottom: 2rem; }
-        .contact-card { background: white; border-radius: 28px; padding: 2rem; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.08); transition: all 0.3s; }
-        .contact-card:hover { transform: translateY(-8px); }
-        .contact-icon { width: 70px; height: 70px; background: #f5ede5; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.2rem; }
-        .contact-icon i { font-size: 2rem; color: #b87c4f; }
-        .work-hours { background: white; border-radius: 28px; padding: 1.8rem; margin-bottom: 2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        .hours-row { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px dashed #eee0d4; }
-        .map-container { border-radius: 28px; overflow: hidden; margin-bottom: 2rem; height: 350px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
-        .social-links { background: white; border-radius: 28px; padding: 1.8rem; text-align: center; }
-        .social-icons { display: flex; justify-content: center; gap: 1.5rem; }
-        .social-icon { width: 50px; height: 50px; background: #f5ede5; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: default; transition: all 0.3s; }
-        .social-icon i { font-size: 1.5rem; color: #b87c4f; }
-        .social-icon:hover { background: #b87c4f; transform: translateY(-5px); }
-        .social-icon:hover i { color: white; }
-        .feedback-form { background: white; border-radius: 28px; padding: 2rem; margin-top: 2rem; }
+        /* Контакты, отзывы, админка */
         .feedback-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-
-        /* Админка */
+        .star-rating-wrapper { margin-bottom: 1rem; display: flex; align-items: center; gap: 10px; }
+        #starRating i { font-size: 1.5rem; color: #f4b942; cursor: pointer; }
         .admin-panel { background: white; border-radius: 32px; padding: 2rem; box-shadow: 0 12px 30px rgba(0,0,0,0.08); }
         .admin-section { border-top: 1px solid #ecdbba; margin-top: 1.5rem; padding-top: 1.5rem; }
-        .admin-section:first-child { border-top: none; margin-top: 0; padding-top: 0; }
         .admin-list { list-style: none; margin-top: 1rem; }
         .admin-list li { background: #fef6ef; margin: 0.6rem 0; padding: 0.8rem 1rem; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
         .delete-btn { background: #c25a3a; padding: 0.3rem 1rem; font-size: 0.8rem; border-radius: 30px; color: white; border: none; cursor: pointer; }
-
-        /* Общие */
-        .testimonials-swiper { margin: 2rem 0; padding: 1rem; }
-        .testimonial-card { background: white; border-radius: 28px; padding: 1.8rem; text-align: center; box-shadow: 0 12px 25px rgba(0,0,0,0.05); }
         .notification { position: fixed; bottom: 20px; right: 20px; background: #2c2418; color: white; padding: 12px 24px; border-radius: 50px; z-index: 1200; animation: slideIn 0.3s; }
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .booking-success { color: #2a7a5a; font-weight: 600; margin-top: 1rem; }
         footer { text-align: center; padding: 2rem; background: #f3ede7; margin-top: 2rem; }
-        .empty-menu { text-align: center; padding: 4rem; background: #fcf8f3; border-radius: 40px; color: #9b8a76; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; cursor: pointer; }
-        .modal.active-modal { display: flex; animation: fadeInModal 0.3s ease; }
-        @keyframes fadeInModal { from { opacity: 0; } to { opacity: 1; } }
-        .modal-content { max-width: 90%; max-height: 90%; border-radius: 20px; }
-        .modal-close { position: absolute; top: 20px; right: 30px; color: white; font-size: 2rem; cursor: pointer; }
-        .modal-caption { position: absolute; bottom: 20px; left: 0; right: 0; text-align: center; color: white; background: rgba(0,0,0,0.6); padding: 0.8rem; }
-        @media (max-width: 700px) { .hero-title { font-size: 2.2rem; } .timer-block { min-width: 60px; } .timer-number { font-size: 1.3rem; } .tabs-container { flex-direction: column; } .admin-tab-wrapper { margin-left: 0; } .tabs-left { width: 100%; } }
+        @media (max-width: 700px) { .hero-title { font-size: 2.2rem; } .tabs-container { flex-direction: column; } .admin-tab-wrapper { margin-left: 0; } .tabs-left { width: 100%; } .feedback-row { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -296,8 +121,6 @@
         <button class="tab-btn active" data-tab="home"><i class="fas fa-home"></i> Главная</button>
         <button class="tab-btn" data-tab="menu"><i class="fas fa-utensils"></i> Меню</button>
         <button class="tab-btn" data-tab="booking"><i class="fas fa-calendar-check"></i> Бронь стола</button>
-        <button class="tab-btn" data-tab="gallery"><i class="fas fa-images"></i> Галерея</button>
-        <button class="tab-btn" data-tab="news"><i class="fas fa-bullhorn"></i> Акции</button>
         <button class="tab-btn" data-tab="contacts"><i class="fas fa-map-marker-alt"></i> Контакты & Отзывы</button>
     </div>
     <div class="admin-tab-wrapper">
@@ -306,7 +129,6 @@
 </div>
 
 <main>
-    <!-- ГЛАВНАЯ -->
     <div id="home" class="tab-content active-tab">
         <div class="hero">
             <video class="hero-video-bg" autoplay muted loop playsinline>
@@ -321,7 +143,7 @@
         </div>
         <div class="container">
             <div class="features">
-                <div class="feature-card"><i class="fas fa-chef-hat"></i><h3>Шеф из Италии</h3><p>Авторские рецепты</p></div>
+                <div class="feature-card"><i class="fas fa-utensils"></i><h3>Шеф из Италии</h3><p>Авторские рецепты</p></div>
                 <div class="feature-card"><i class="fas fa-leaf"></i><h3>Свежайшие продукты</h3><p>Фермерские хозяйства</p></div>
                 <div class="feature-card"><i class="fas fa-wine-glass-alt"></i><h3>Винная карта</h3><p>Более 200 позиций</p></div>
                 <div class="feature-card"><i class="fas fa-music"></i><h3>Живая музыка</h3><p>Каждую пятницу</p></div>
@@ -336,7 +158,6 @@
         </div>
     </div>
 
-    <!-- МЕНЮ -->
     <div id="menu" class="tab-content">
         <div class="container">
             <div class="menu-hero"><h2><i class="fas fa-utensils"></i> Наше меню</h2><p>Гастрономическое путешествие с авторскими блюдами</p></div>
@@ -344,13 +165,12 @@
                 <button class="category-icon-btn active-cat" data-cat="all"><i class="fas fa-border-all"></i><span>Все</span></button>
                 <button class="category-icon-btn" data-cat="salads"><i class="fas fa-leaf"></i><span>Салаты</span></button>
                 <button class="category-icon-btn" data-cat="hot"><i class="fas fa-fire"></i><span>Горячие</span></button>
-                <button class="category-icon-btn" data-cat="desserts"><i class="fas fa-cake-candles"></i><span>Десерты</span></button>
+                <button class="category-icon-btn" data-cat="desserts"><i class="fas fa-birthday-cake"></i><span>Десерты</span></button>
             </div>
             <div class="menu-grid" id="menuGrid"></div>
         </div>
     </div>
 
-    <!-- БРОНИРОВАНИЕ -->
     <div id="booking" class="tab-content">
         <div class="container">
             <div class="booking-hero"><h2><i class="fas fa-calendar-alt"></i> Забронируйте столик</h2><p>Заполните форму, и мы подготовим для вас лучший вечер</p></div>
@@ -359,423 +179,415 @@
                     <form id="reservationForm">
                         <div class="form-group-modern"><label><i class="fas fa-user"></i> Ваше имя</label><input type="text" id="guestName" placeholder="Иван Петров" required></div>
                         <div class="form-group-modern"><label><i class="fas fa-phone-alt"></i> Телефон</label><input type="tel" id="guestPhone" placeholder="+7 (999) 123-45-67" required></div>
-                        <div class="date-time-row"><div class="form-group-modern"><label><i class="fas fa-calendar-day"></i> Дата</label><input type="text" id="resDate" placeholder="Выберите дату" required></div><div class="form-group-modern"><label><i class="fas fa-clock"></i> Время</label><input type="text" id="resTime" placeholder="Выберите время" required></div></div>
-                        <div class="form-group-modern"><label><i class="fas fa-users"></i> Количество гостей</label><div class="guest-counter"><button type="button" id="decrementGuests">-</button><span id="guestsValue">2</span><button type="button" id="incrementGuests">+</button></div><input type="hidden" id="guestsCount" value="2"></div>
+                        <div class="date-time-row">
+                            <div class="form-group-modern"><label><i class="fas fa-calendar-day"></i> Дата</label><input type="text" id="resDate" placeholder="Выберите дату" required></div>
+                            <div class="form-group-modern"><label><i class="fas fa-clock"></i> Время</label><input type="text" id="resTime" placeholder="Выберите время" required></div>
+                        </div>
+                        <div class="form-group-modern">
+                            <label><i class="fas fa-users"></i> Количество гостей</label>
+                            <div class="guest-counter">
+                                <button type="button" id="decrementGuests">-</button>
+                                <span id="guestsValue">2</span>
+                                <button type="button" id="incrementGuests">+</button>
+                            </div>
+                            <input type="hidden" id="guestsCount" value="2">
+                        </div>
                         <div class="form-group-modern"><label><i class="fas fa-pen-alt"></i> Особые пожелания</label><textarea id="specialWishes" rows="2" placeholder="Аллергии, предпочтения..."></textarea></div>
                         <button type="submit" class="submit-btn"><i class="fas fa-check-circle"></i> Забронировать</button>
                         <div id="bookingMsg"></div>
                     </form>
                 </div>
-                <div class="booking-info-side"><h3>Почему выбирают нас?</h3><ul style="list-style: none;"><li><i class="fas fa-clock"></i> Бронирование без предоплаты</li><li><i class="fas fa-wine-glass-alt"></i> Приветственный бокал вина</li><li><i class="fas fa-child"></i> Детское меню</li><li><i class="fas fa-parking"></i> Удобная парковка</li></ul></div>
+                <div class="booking-info-side"><h3>Почему выбирают нас?</h3><ul style="list-style: none; margin-top: 1rem; line-height: 2;"><li><i class="fas fa-clock" style="color:#b87c4f; margin-right: 8px;"></i> Бронирование без предоплаты</li><li><i class="fas fa-wine-glass-alt" style="color:#b87c4f; margin-right: 8px;"></i> Приветственный бокал вина</li><li><i class="fas fa-child" style="color:#b87c4f; margin-right: 8px;"></i> Детское меню</li><li><i class="fas fa-parking" style="color:#b87c4f; margin-right: 8px;"></i> Удобная парковка</li></ul></div>
             </div>
         </div>
     </div>
 
-    <!-- ГАЛЕРЕЯ -->
-    <div id="gallery" class="tab-content">
-        <div class="container">
-            <div style="text-align: center; margin-bottom: 2rem;"><h2><i class="fas fa-camera-retro"></i> Фотогалерея</h2><p>Атмосфера, изысканные блюда и яркие события</p></div>
-            <div class="gallery-filters" id="galleryFilters">
-                <button class="gallery-filter-btn active-gallery-filter" data-gallery-cat="all">Все</button>
-                <button class="gallery-filter-btn" data-gallery-cat="interior">Интерьеры</button>
-                <button class="gallery-filter-btn" data-gallery-cat="dishes">Блюда</button>
-                <button class="gallery-filter-btn" data-gallery-cat="events">Мероприятия</button>
-            </div>
-            <div class="gallery-grid" id="galleryGrid"></div>
-        </div>
-    </div>
-
-    <!-- АКЦИИ -->
-    <div id="news" class="tab-content">
-        <div class="container">
-            <div class="promo-header">
-                <h2><i class="fas fa-bullhorn"></i> Акции, Новости & Спецпредложения</h2>
-                <p>Следите за обновлениями и экономьте с нашими предложениями</p>
-            </div>
-
-            <!-- Внутренние табы -->
-            <div class="news-tabs">
-                <button class="news-tab-btn active-news-tab" data-section="promos"><i class="fas fa-gift"></i> Акции</button>
-                <button class="news-tab-btn" data-section="latestnews"><i class="fas fa-newspaper"></i> Новости</button>
-                <button class="news-tab-btn" data-section="offers"><i class="fas fa-star"></i> Спецпредложения</button>
-            </div>
-
-            <!-- СЕКЦИЯ: АКЦИИ -->
-            <div id="section-promos" class="news-section active-news-section">
-                <div class="promo-grid" id="newsList"></div>
-            </div>
-
-            <!-- СЕКЦИЯ: НОВОСТИ -->
-            <div id="section-latestnews" class="news-section">
-                <div class="news-grid" id="newsGrid"></div>
-            </div>
-
-            <!-- СЕКЦИЯ: СПЕЦПРЕДЛОЖЕНИЯ -->
-            <div id="section-offers" class="news-section">
-                <div class="offer-grid" id="offersGrid"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- АДМИНКА -->
-    <div id="admin" class="tab-content"><div class="container"><h2>Административная панель</h2><div class="admin-panel" id="adminPanel"></div></div></div>
-
-    <!-- КОНТАКТЫ -->
     <div id="contacts" class="tab-content">
         <div class="container">
             <div class="contacts-hero"><h2><i class="fas fa-map-marker-alt"></i> Контакты & Отзывы</h2><p>Мы всегда рады видеть вас!</p></div>
-            <div class="contacts-grid">
-                <div class="contact-card"><div class="contact-icon"><i class="fas fa-map-pin"></i></div><h3>Адрес</h3><p>г. Москва, ул. Гастрономическая, 15</p></div>
-                <div class="contact-card"><div class="contact-icon"><i class="fas fa-phone-alt"></i></div><h3>Телефон</h3><p><a href="tel:+74951234567" style="color:#b87c4f;">+7 (495) 123-45-67</a></p></div>
-                <div class="contact-card"><div class="contact-icon"><i class="fas fa-envelope"></i></div><h3>Email</h3><p><a href="mailto:hello@vkus-i-uet.ru" style="color:#b87c4f;">hello@vkus-i-uet.ru</a></p></div>
-            </div>
-            <div class="work-hours"><h3><i class="far fa-clock"></i> График работы</h3><div class="hours-table"><div class="hours-row"><span>Понедельник</span><span>12:00 - 23:00</span></div><div class="hours-row"><span>Вторник - Четверг</span><span>11:00 - 00:00</span></div><div class="hours-row"><span>Пятница - Суббота</span><span>11:00 - 02:00</span></div><div class="hours-row"><span>Воскресенье</span><span>11:00 - 23:00</span></div></div></div>
-            <div class="map-container" id="map"></div>
-            <div class="social-links"><h3><i class="fas fa-share-alt"></i> Мы в соцсетях</h3><div class="social-icons"><div class="social-icon"><i class="fab fa-instagram"></i></div><div class="social-icon"><i class="fab fa-vk"></i></div><div class="social-icon"><i class="fab fa-telegram"></i></div><div class="social-icon"><i class="fab fa-whatsapp"></i></div></div></div>
-            <div class="feedback-form"><h3><i class="fas fa-comment-dots"></i> Свяжитесь с нами</h3><form id="feedbackForm"><div class="feedback-row"><input type="text" id="feedbackName" placeholder="Ваше имя" class="form-group-modern" style="margin-bottom:0;"><input type="email" id="feedbackEmail" placeholder="Email" class="form-group-modern" style="margin-bottom:0;"></div><div class="form-group-modern"><textarea id="feedbackMessage" rows="3" placeholder="Ваше сообщение..."></textarea></div><button type="submit" class="submit-btn" style="width: auto; padding: 12px 32px;"><i class="fas fa-paper-plane"></i> Отправить</button><div id="feedbackMsg"></div></form></div>
-
-            <!-- ОТЗЫВЫ В КОНТАКТАХ -->
+            
             <div style="background: #fcf6ef; border-radius: 40px; padding: 2rem 1rem; margin-top: 2rem;">
                 <h2 style="text-align: center; margin-bottom: 1.5rem;"><i class="fas fa-star"></i> Отзывы гостей</h2>
-                <div class="swiper contacts-reviews-swiper">
+                <div class="swiper contacts-reviews-swiper" style="padding-bottom: 2rem;">
                     <div class="swiper-wrapper" id="contactsReviewsWrapper"></div>
-                    <div class="swiper-pagination contacts-reviews-pagination"></div>
+                    <div class="swiper-pagination"></div>
                 </div>
+                
                 <div style="margin-top: 2rem; background: white; border-radius: 28px; padding: 1.8rem;">
                     <h3 style="margin-bottom: 1.2rem;"><i class="fas fa-pen"></i> Оставить отзыв</h3>
                     <form id="contactReviewForm">
                         <div class="feedback-row">
                             <div class="form-group-modern" style="margin-bottom:0;">
-                                <input type="text" id="contactReviewAuthor" placeholder="Ваше имя" style="width:100%; padding:14px 18px; border:1.5px solid #eee0d4; border-radius:24px; font-family:'Inter',sans-serif; background:#fefcf9; font-size:1rem;">
+                                <input type="text" id="contactReviewAuthor" placeholder="Ваше имя" required>
                             </div>
-                            <div class="form-group-modern" style="margin-bottom:0;">
-                                <div style="display:flex; gap:0.4rem; align-items:center; padding:14px 18px; border:1.5px solid #eee0d4; border-radius:24px; background:#fefcf9;">
-                                    <span style="font-size:0.9rem; color:#5c4b32; font-weight:600;">Оценка:</span>
-                                    <div id="starRating" style="display:flex; gap:4px; cursor:pointer;">
-                                        <i class="fas fa-star" data-star="1" style="color:#ddd; font-size:1.3rem;"></i>
-                                        <i class="fas fa-star" data-star="2" style="color:#ddd; font-size:1.3rem;"></i>
-                                        <i class="fas fa-star" data-star="3" style="color:#ddd; font-size:1.3rem;"></i>
-                                        <i class="fas fa-star" data-star="4" style="color:#ddd; font-size:1.3rem;"></i>
-                                        <i class="fas fa-star" data-star="5" style="color:#ddd; font-size:1.3rem;"></i>
-                                    </div>
-                                    <input type="hidden" id="contactReviewStars" value="5">
+                            <div class="star-rating-wrapper">
+                                <label style="font-weight: 600;">Оценка:</label>
+                                <div id="starRating">
+                                    <i class="fas fa-star" data-value="1"></i>
+                                    <i class="fas fa-star" data-value="2"></i>
+                                    <i class="fas fa-star" data-value="3"></i>
+                                    <i class="fas fa-star" data-value="4"></i>
+                                    <i class="fas fa-star" data-value="5"></i>
                                 </div>
+                                <input type="hidden" id="contactReviewStars" value="5">
                             </div>
                         </div>
-                        <div class="form-group-modern" style="margin-top:1rem;">
-                            <textarea id="contactReviewText" rows="3" placeholder="Поделитесь впечатлениями..." style="width:100%; padding:14px 18px; border:1.5px solid #eee0d4; border-radius:24px; font-family:'Inter',sans-serif; background:#fefcf9; font-size:1rem; resize:vertical;"></textarea>
+                        <div class="form-group-modern">
+                            <textarea id="contactReviewText" rows="3" placeholder="Напишите ваш отзыв здесь..." required></textarea>
                         </div>
-                        <button type="submit" class="submit-btn" style="width:auto; padding:12px 32px;"><i class="fas fa-paper-plane"></i> Отправить отзыв</button>
+                        <button type="submit" class="submit-btn" style="width: auto; padding: 12px 32px;"><i class="fas fa-paper-plane"></i> Отправить отзыв</button>
                         <div id="contactReviewMsg"></div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+    <div id="admin" class="tab-content">
+        <div class="container">
+            <h2>Административная панель</h2>
+            <div class="admin-panel" id="adminPanel"></div>
+        </div>
+    </div>
 </main>
-<footer>© 2025 Ресторан "Вкус & Уют" — Ждём вас в гости</footer>
 
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<footer>
+    <p>&copy; 2026 Ресторан "Вкус & Уют". Все права защищены.</p>
+</footer>
+
 <script>
-    // ========== ДАННЫЕ ==========
-    let menuItems = [
-        { id: 1, name: "Цезарь с креветками", price: 690, category: "salads", img: "https://images.unsplash.com/photo-1550304943-4f24f54dd0b8?w=400&h=250&fit=crop", desc: "Классический соус, пармезан, хрустящие гренки" },
-        { id: 2, name: "Греческий салат", price: 490, category: "salads", img: "https://images.unsplash.com/photo-1546069901-d5bfd2cbfb1f?w=400&h=250&fit=crop", desc: "Фета, маслины, свежие овощи" },
-        { id: 3, name: "Стейк Рибай", price: 1250, category: "hot", img: "https://images.unsplash.com/photo-1600891964092-4316c288032e?w=400&h=250&fit=crop", desc: "Мраморная говядина с розмарином" },
-        { id: 4, name: "Паста Карбонара", price: 580, category: "hot", img: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400&h=250&fit=crop", desc: "Бекон, пармезан, яйцо" },
-        { id: 5, name: "Тирамису", price: 420, category: "desserts", img: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400&h=250&fit=crop", desc: "Кофейный десерт с маскарпоне" }
-    ];
+    // КОНФИГУРАЦИЯ SUPABASE
+    // ЗАМЕНИТЕ ЭТИ ЗНАЧЕНИЯ НА ВАШИ СОБСТВЕННЫЕ ИЗ ПАНЕЛИ SUPABASE
+    const SUPABASE_URL = 'https://whllxjvanucomvsrmsmt.supabase.co/rest/v1/';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndobGx4anZhbnVjb212c3Jtc210Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1MDk3NzcsImV4cCI6MjA5NjA4NTc3N30.--k9S-lA27f-0BAUd0ji7OgUdvyQyncUu0OeuLomGUg';
+    
+    // Инициализация клиента Supabase
+    const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Локальные массивы для рендеринга (будут синхронизироваться с Supabase)
+    let menuItems = [];
     let bookings = [];
-    let newsItems = [
-        { id: 1, title: "Счастливые часы", description: "Скидка 20% на все напитки с 16:00 до 18:00", date: "До 31 декабря", code: "HAPPY20", img: "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=200&fit=crop" },
-        { id: 2, title: "День рождения", description: "Именинникам десерт и шампанское в подарок", date: "Постоянно", code: "BIRTHDAY", img: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=400&h=200&fit=crop" }
-    ];
-    let newsArticles = [
-        { id: 1, tag: "Событие", date: "28 мая 2026", title: "Джазовый фестиваль в «Вкус & Уют»", text: "Каждую пятницу июня приглашаем вас на живые выступления лучших джазовых коллективов города. Начало в 20:00, вход свободный для гостей ресторана.", img: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=400&h=200&fit=crop" },
-        { id: 2, tag: "Меню", date: "15 мая 2026", title: "Новое летнее меню от шефа", text: "Шеф-повар Марко Бруно представил обновлённое летнее меню с акцентом на свежие овощи, морепродукты и авторские десерты с ягодами.", img: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=200&fit=crop" },
-        { id: 3, tag: "Новость", date: "3 мая 2026", title: "Открытие летней террасы", text: "Рады объявить об открытии уютной летней террасы с видом на сад. Вместимость — 40 гостей. Терраса работает с 11:00 до 23:00.", img: "https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=400&h=200&fit=crop" }
-    ];
-    let specialOffers = [
-        { id: 1, icon: "fas fa-users", title: "Бизнес-ланч", subtitle: "Будни с 12:00 до 15:00", discount: "590 ₽", discountSuffix: "/ комплект", desc: "Суп, горячее и напиток на выбор. Быстро, сытно, вкусно.", condition: "Действует по будням, без предварительного заказа" },
-        { id: 2, icon: "fas fa-birthday-cake", title: "Банкет на 10+", subtitle: "Для компаний от 10 человек", discount: "−15%", discountSuffix: "на всё меню", desc: "Скидка 15% на всё меню при заказе банкета. Бесплатный зал при заказе от 30 000 ₽.", condition: "Требуется бронирование за 3 дня" },
-        { id: 3, icon: "fas fa-child", title: "Детский праздник", subtitle: "Для гостей до 12 лет", discount: "Бесплатно", discountSuffix: "детское меню", desc: "При заказе взрослого сета детское меню в подарок. Аниматор и торт при заказе зала.", condition: "При заказе зала от 20 000 ₽" },
-        { id: 4, icon: "fas fa-wine-glass-alt", title: "Вино вечера", subtitle: "Ежедневно с 18:00 до 20:00", discount: "−30%", discountSuffix: "на вино по бокалам", desc: "Каждый вечер специальная подборка вин со скидкой 30%. Отличный повод начать вечер правильно.", condition: "Распространяется только на бокальный список" }
-    ];
-    let reviews = [
-        { id: 1, author: "Анна", text: "Очень вкусно, уютно, отличное обслуживание!" },
-        { id: 2, author: "Максим", text: "Лучший стейк в городе!" },
-        { id: 3, author: "Елена", text: "Интерьер шикарный, атмосфера волшебная" }
-    ];
-    const galleryData = [
-        { id: 1, category: "interior", title: "Основной зал", desc: "Уютная атмосфера", img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=500&fit=crop" },
-        { id: 2, category: "interior", title: "Винный уголок", desc: "Более 200 сортов", img: "https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=600&h=500&fit=crop" },
-        { id: 3, category: "dishes", title: "Стейк", desc: "Мраморная говядина", img: "https://images.unsplash.com/photo-1600891964092-4316c288032e?w=600&h=500&fit=crop" },
-        { id: 4, category: "events", title: "Джазовый вечер", desc: "Живая музыка", img: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&h=500&fit=crop" }
+    let reviews = [];
+
+    // Статические данные для демонстрации меню, если в базе ничего нет
+    const defaultMenu = [
+        { id: 1, title: 'Цезарь с креветками', price: 690, category: 'salads', image: 'https://images.unsplash.com/photo-1550304943-4f24f54ddde9?w=500' },
+        { id: 2, title: 'Стейк Рибай', price: 1890, category: 'hot', image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=500' },
+        { id: 3, title: 'Тирамису', price: 450, category: 'desserts', image: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=500' }
     ];
 
-    function saveAll() { localStorage.setItem("restaurant_menu", JSON.stringify(menuItems)); localStorage.setItem("restaurant_bookings", JSON.stringify(bookings)); localStorage.setItem("restaurant_news", JSON.stringify(newsItems)); localStorage.setItem("restaurant_reviews", JSON.stringify(reviews)); localStorage.setItem("restaurant_articles", JSON.stringify(newsArticles)); localStorage.setItem("restaurant_offers", JSON.stringify(specialOffers)); }
-    function loadAll() { if(localStorage.getItem("restaurant_menu")) menuItems = JSON.parse(localStorage.getItem("restaurant_menu")); if(localStorage.getItem("restaurant_bookings")) bookings = JSON.parse(localStorage.getItem("restaurant_bookings")); if(localStorage.getItem("restaurant_news")) newsItems = JSON.parse(localStorage.getItem("restaurant_news")); if(localStorage.getItem("restaurant_reviews")) reviews = JSON.parse(localStorage.getItem("restaurant_reviews")); if(localStorage.getItem("restaurant_articles")) newsArticles = JSON.parse(localStorage.getItem("restaurant_articles")); if(localStorage.getItem("restaurant_offers")) specialOffers = JSON.parse(localStorage.getItem("restaurant_offers")); }
-
-    let currentFilter = "all";
-    function renderMenu() {
-        const filtered = currentFilter === "all" ? menuItems : menuItems.filter(m => m.category === currentFilter);
-        const grid = document.getElementById("menuGrid");
-        if(filtered.length === 0) { grid.innerHTML = `<div class="empty-menu"><i class="fas fa-utensils" style="font-size: 3rem;"></i><p>Блюда скоро появятся</p></div>`; return; }
-        grid.innerHTML = filtered.map(item => `<div class="menu-card"><div class="menu-img"><img src="${item.img}" alt="${item.name}"></div><div class="menu-content"><h3 class="menu-title">${item.name}</h3><p style="color:#8a7a68; font-size:0.85rem;">${item.desc}</p><div class="menu-price">${item.price} ₽</div></div></div>`).join("");
+    // Функция показа уведомлений
+    function showNotif(text) {
+        const n = document.createElement('div');
+        n.className = 'notification';
+        n.innerHTML = text;
+        document.body.appendChild(n);
+        setTimeout(() => n.remove(), 3500);
     }
 
-    function renderPromotions() {
-        document.getElementById("newsList").innerHTML = newsItems.map(item => `
-            <div class="promo-card">
-                <div class="promo-img"><img src="${item.img}" alt="${item.title}"></div>
-                <div class="promo-content">
-                    <span class="promo-badge badge-promo"><i class="fas fa-tag"></i> Акция</span>
-                    <h3 class="promo-title" style="font-family:'Playfair Display',serif; font-size:1.15rem; margin-bottom:0.5rem;">${item.title}</h3>
-                    <p style="color:#6b5c4a; font-size:0.9rem; line-height:1.5;">${item.description}</p>
-                    <div class="promo-code" title="Нажмите чтобы скопировать" onclick="navigator.clipboard&&navigator.clipboard.writeText('${item.code}');this.textContent='Скопировано!';setTimeout(()=>this.textContent='Промокод: ${item.code}',1500)">Промокод: ${item.code}</div>
-                    <div class="promo-date-badge"><i class="far fa-calendar-alt"></i> ${item.date}</div>
-                </div>
-            </div>`).join("");
-    }
+    // Инициализация Swiper слайдеров
+    let testimonialSwiper, contactsReviewSwiper;
+    function initSwipers() {
+        if (testimonialSwiper) testimonialSwiper.destroy();
+        if (contactsReviewSwiper) contactsReviewSwiper.destroy();
 
-    function renderNewsArticles() {
-        const grid = document.getElementById("newsGrid");
-        if (!grid) return;
-        grid.innerHTML = newsArticles.map(a => `
-            <div class="news-card">
-                <div class="news-card-img">
-                    <img src="${a.img}" alt="${a.title}">
-                    <span class="news-card-tag">${a.tag}</span>
-                </div>
-                <div class="news-card-body">
-                    <div class="news-card-date"><i class="far fa-calendar-alt"></i> ${a.date}</div>
-                    <div class="news-card-title">${a.title}</div>
-                    <div class="news-card-text">${a.text}</div>
-                    <div class="news-read-more"><i class="fas fa-arrow-right"></i> Подробнее</div>
-                </div>
-            </div>`).join("");
-    }
-
-    function renderSpecialOffers() {
-        const grid = document.getElementById("offersGrid");
-        if (!grid) return;
-        grid.innerHTML = specialOffers.map(o => `
-            <div class="offer-card">
-                <div class="offer-card-header">
-                    <div class="offer-icon"><i class="${o.icon}"></i></div>
-                    <div class="offer-title">${o.title}</div>
-                    <div class="offer-subtitle">${o.subtitle}</div>
-                </div>
-                <div class="offer-card-body">
-                    <div class="offer-discount">${o.discount} <span>${o.discountSuffix}</span></div>
-                    <div class="offer-desc">${o.desc}</div>
-                    <div class="offer-condition"><i class="fas fa-info-circle"></i> ${o.condition}</div>
-                </div>
-            </div>`).join("");
-    }
-
-    function setupNewsTabs() {
-        document.querySelectorAll('.news-tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.news-tab-btn').forEach(b => b.classList.remove('active-news-tab'));
-                document.querySelectorAll('.news-section').forEach(s => s.classList.remove('active-news-section'));
-                btn.classList.add('active-news-tab');
-                document.getElementById('section-' + btn.dataset.section).classList.add('active-news-section');
-            });
+        testimonialSwiper = new Swiper('.testimonials-swiper', {
+            slidesPerView: 1, spaceBetween: 20, pagination: { el: '.swiper-pagination', clickable: true },
+            breakpoints: { 768: { slidesPerView: 2 } }
+        });
+        contactsReviewSwiper = new Swiper('.contacts-reviews-swiper', {
+            slidesPerView: 1, spaceBetween: 20, pagination: { el: '.swiper-pagination', clickable: true },
+            breakpoints: { 768: { slidesPerView: 2 } }
         });
     }
 
-    let currentGalleryFilter = "all";
-    function renderGallery() {
-        const filtered = currentGalleryFilter === "all" ? galleryData : galleryData.filter(item => item.category === currentGalleryFilter);
-        document.getElementById("galleryGrid").innerHTML = filtered.map(item => `<div class="gallery-item" data-img="${item.img}" data-title="${item.title}" data-desc="${item.desc}"><img src="${item.img}" alt="${item.title}"><div class="gallery-overlay"><h4>${item.title}</h4><p>${item.desc}</p></div></div>`).join("");
-        document.querySelectorAll('.gallery-item').forEach(el => { el.addEventListener('click', () => openModal(el.dataset.img, el.dataset.title, el.dataset.desc)); });
-    }
-    let modal = null;
-    function openModal(img, title, desc) { if(!modal) { modal = document.createElement('div'); modal.className = 'modal'; modal.innerHTML = `<span class="modal-close">&times;</span><img class="modal-content" id="modalImage"><div class="modal-caption" id="modalCaption"></div>`; document.body.appendChild(modal); modal.addEventListener('click', (e) => { if(e.target === modal || e.target.classList.contains('modal-close')) modal.classList.remove('active-modal'); }); } document.getElementById('modalImage').src = img; document.getElementById('modalCaption').innerHTML = `<strong>${title}</strong> — ${desc}`; modal.classList.add('active-modal'); }
-    
-    function renderReviews() { document.getElementById("reviewsSwiperWrapper").innerHTML = reviews.map(r => `<div class="swiper-slide"><div class="testimonial-card"><i class="fas fa-quote-left"></i><p>${r.text}</p><h4>— ${r.author}</h4></div></div>`).join(""); if(window.reviewsSwiper) window.reviewsSwiper.update(); }
-    
-    function renderAdminPanel() {
-        const adminHtml = `
-        <div class="admin-section"><h3>➕ Добавить блюдо</h3><form id="addDishForm"><input type="text" id="dishName" placeholder="Название"><input type="text" id="dishPrice" placeholder="Цена"><select id="dishCategory"><option value="salads">Салаты</option><option value="hot">Горячие</option><option value="desserts">Десерты</option></select><input type="text" id="dishImg" placeholder="URL изображения"><button type="submit">Добавить</button></form></div>
+    // ЗАГРУЗКА ВСЕХ ДАННЫХ ИЗ SUPABASE
+    async function loadAll() {
+        try {
+            // 1. Загрузка Меню
+            let { data: menuData, error: menuErr } = await supabase.from('menu').select('*').order('id', { ascending: true });
+            if (menuErr) throw menuErr;
+            
+            if (!menuData || menuData.length === 0) {
+                // Если база данных пуста, заполняем её дефолтными значениями для примера
+                await supabase.from('menu').insert(defaultMenu);
+                menuItems = defaultMenu;
+            } else {
+                menuItems = menuData;
+            }
 
-        <div class="admin-section"><h3>📋 Брони</h3><ul id="adminBookingsList" class="admin-list">${bookings.length ? bookings.map(b => `<li><strong>${b.name}</strong> | ${b.date} ${b.time} | ${b.guests} чел. <button class="delete-btn" data-id="${b.id}" data-type="booking">Удалить</button></li>`).join("") : '<li style="color:#9b8a76; justify-content:center;">Броней пока нет</li>'}</ul></div>
+            // 2. Загрузка Бронирований
+            let { data: bookingData, error: bookErr } = await supabase.from('bookings').select('*').order('created_at', { ascending: false });
+            if (bookErr) throw bookErr;
+            bookings = bookingData || [];
 
-        <div class="admin-section">
-            <h3>🎁 Акции</h3>
-            <form id="addNewsForm" style="display:grid; gap:0.6rem;">
-                <input type="text" id="newsTitle" placeholder="Заголовок акции">
-                <textarea id="newsDesc" placeholder="Описание акции" rows="2"></textarea>
-                <input type="text" id="newsCode" placeholder="Промокод">
-                <input type="text" id="newsDate" placeholder="Срок действия (напр. До 31 декабря)">
-                <input type="text" id="newsImg" placeholder="URL изображения (необязательно)">
-                <button type="submit">➕ Добавить акцию</button>
-            </form>
-            <ul id="newsAdminList" class="admin-list" style="margin-top:1rem;">${newsItems.map(n => `<li><div><strong>${n.title}</strong><br><span style="font-size:0.82rem; color:#8a7a68;">${n.description} · ${n.date} · <em>${n.code}</em></span></div><button class="delete-btn" data-id="${n.id}" data-type="news">🗑️</button></li>`).join("")}</ul>
-        </div>
+            // 3. Загрузка Отзывов
+            let { data: reviewData, error: revErr } = await supabase.from('reviews').select('*').order('created_at', { ascending: false });
+            if (revErr) throw revErr;
+            reviews = reviewData || [];
 
-        <div class="admin-section">
-            <h3>📰 Новости</h3>
-            <form id="addArticleForm" style="display:grid; gap:0.6rem;">
-                <input type="text" id="articleTitle" placeholder="Заголовок новости">
-                <textarea id="articleText" placeholder="Текст новости" rows="3"></textarea>
-                <input type="text" id="articleTag" placeholder="Тег (напр. Событие, Меню, Новость)">
-                <input type="text" id="articleDate" placeholder="Дата (напр. 10 июня 2026)">
-                <input type="text" id="articleImg" placeholder="URL изображения (необязательно)">
-                <button type="submit">➕ Добавить новость</button>
-            </form>
-            <ul id="articlesAdminList" class="admin-list" style="margin-top:1rem;">${newsArticles.map(a => `<li><div><strong>${a.title}</strong><br><span style="font-size:0.82rem; color:#8a7a68;">${a.tag} · ${a.date}</span></div><button class="delete-btn" data-id="${a.id}" data-type="article">🗑️</button></li>`).join("")}</ul>
-        </div>
-
-        <div class="admin-section">
-            <h3>⭐ Спецпредложения</h3>
-            <form id="addOfferForm" style="display:grid; gap:0.6rem;">
-                <input type="text" id="offerTitle" placeholder="Название предложения">
-                <input type="text" id="offerSubtitle" placeholder="Подзаголовок (напр. Будни с 12:00 до 15:00)">
-                <input type="text" id="offerDiscount" placeholder="Скидка / цена (напр. −20% или 590 ₽)">
-                <input type="text" id="offerDiscountSuffix" placeholder="Уточнение (напр. на всё меню)">
-                <textarea id="offerDesc" placeholder="Описание предложения" rows="2"></textarea>
-                <input type="text" id="offerCondition" placeholder="Условия получения">
-                <button type="submit">➕ Добавить предложение</button>
-            </form>
-            <ul id="offersAdminList" class="admin-list" style="margin-top:1rem;">${specialOffers.map(o => `<li><div><strong>${o.title}</strong><br><span style="font-size:0.82rem; color:#8a7a68;">${o.discount} ${o.discountSuffix} · ${o.subtitle}</span></div><button class="delete-btn" data-id="${o.id}" data-type="offer">🗑️</button></li>`).join("")}</ul>
-        </div>
-
-        <div class="admin-section"><h3>💬 Отзывы</h3><form id="addReviewForm"><input type="text" id="reviewAuthor" placeholder="Имя"><textarea id="reviewText" placeholder="Отзыв"></textarea><button type="submit">Добавить</button></form><ul id="reviewsListAdmin" class="admin-list">${reviews.map(r => `<li><strong>${r.author}</strong>: ${r.text} <button class="delete-btn" data-id="${r.id}" data-type="review">✖</button></li>`).join("")}</ul></div>
-        <div class="admin-section"><h3>🍽️ Блюда</h3><ul id="adminMenuList" class="admin-list">${menuItems.map(m => `<li>${m.name} - ${m.price}₽ <button class="delete-btn" data-id="${m.id}" data-type="menu">Удалить</button></li>`).join("")}</ul></div>`;
-        document.getElementById("adminPanel").innerHTML = adminHtml;
-        attachAdminEvents();
-    }
-    
-    function attachAdminEvents() {
-        document.getElementById("addDishForm")?.addEventListener("submit", (e) => { e.preventDefault(); let name = document.getElementById("dishName").value, price = parseInt(document.getElementById("dishPrice").value), category = document.getElementById("dishCategory").value, img = document.getElementById("dishImg").value || "https://via.placeholder.com/400x250"; if(name && price) { menuItems.push({ id: Date.now(), name, price, category, img, desc: "Авторское блюдо" }); saveAll(); renderMenu(); renderAdminPanel(); showNotif(`Добавлено: ${name}`); e.target.reset(); } });
-
-        document.getElementById("addNewsForm")?.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const title = document.getElementById("newsTitle").value.trim();
-            const desc = document.getElementById("newsDesc").value.trim();
-            if (!title || !desc) return;
-            newsItems.push({ id: Date.now(), title, description: desc, date: document.getElementById("newsDate").value.trim() || "Постоянно", code: document.getElementById("newsCode").value.trim() || "PROMO", img: document.getElementById("newsImg").value.trim() || "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=200&fit=crop" });
-            saveAll(); renderPromotions(); renderAdminPanel(); showNotif("Акция добавлена"); e.target.reset();
-        });
-
-        document.getElementById("addArticleForm")?.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const title = document.getElementById("articleTitle").value.trim();
-            const text = document.getElementById("articleText").value.trim();
-            if (!title || !text) return;
-            newsArticles.push({ id: Date.now(), title, text, tag: document.getElementById("articleTag").value.trim() || "Новость", date: document.getElementById("articleDate").value.trim() || new Date().toLocaleDateString('ru-RU', {day:'numeric', month:'long', year:'numeric'}), img: document.getElementById("articleImg").value.trim() || "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=200&fit=crop" });
-            saveAll(); renderNewsArticles(); renderAdminPanel(); showNotif("Новость добавлена"); e.target.reset();
-        });
-
-        document.getElementById("addOfferForm")?.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const title = document.getElementById("offerTitle").value.trim();
-            const discount = document.getElementById("offerDiscount").value.trim();
-            if (!title || !discount) return;
-            specialOffers.push({ id: Date.now(), icon: "fas fa-star", title, subtitle: document.getElementById("offerSubtitle").value.trim() || "", discount, discountSuffix: document.getElementById("offerDiscountSuffix").value.trim() || "", desc: document.getElementById("offerDesc").value.trim() || "", condition: document.getElementById("offerCondition").value.trim() || "" });
-            saveAll(); renderSpecialOffers(); renderAdminPanel(); showNotif("Спецпредложение добавлено"); e.target.reset();
-        });
-
-        document.getElementById("addReviewForm")?.addEventListener("submit", (e) => { e.preventDefault(); reviews.push({ id: Date.now(), author: document.getElementById("reviewAuthor").value || "Гость", text: document.getElementById("reviewText").value }); saveAll(); renderReviews(); renderAdminPanel(); showNotif("Отзыв добавлен"); e.target.reset(); });
-
-        document.querySelectorAll(".delete-btn").forEach(btn => { btn.addEventListener("click", () => {
-            const id = parseInt(btn.dataset.id), type = btn.dataset.type;
-            if(type === "news") { newsItems = newsItems.filter(n => n.id !== id); saveAll(); renderPromotions(); renderAdminPanel(); showNotif("Акция удалена"); }
-            if(type === "article") { newsArticles = newsArticles.filter(a => a.id !== id); saveAll(); renderNewsArticles(); renderAdminPanel(); showNotif("Новость удалена"); }
-            if(type === "offer") { specialOffers = specialOffers.filter(o => o.id !== id); saveAll(); renderSpecialOffers(); renderAdminPanel(); showNotif("Предложение удалено"); }
-            if(type === "booking") { bookings = bookings.filter(b => b.id !== id); saveAll(); renderAdminPanel(); showNotif("Бронь удалена"); }
-            if(type === "review") { reviews = reviews.filter(r => r.id !== id); saveAll(); renderReviews(); renderAdminPanel(); showNotif("Отзыв удалён"); }
-            if(type === "menu") { menuItems = menuItems.filter(m => m.id !== id); saveAll(); renderMenu(); renderAdminPanel(); showNotif("Блюдо удалено"); }
-        }); });
-    }
-    
-    function showNotif(msg) { let d = document.createElement("div"); d.className = "notification"; d.innerHTML = `<i class="fas fa-bell"></i> ${msg}`; document.body.appendChild(d); setTimeout(()=>d.remove(), 3000); }
-    
-    function initBookingForm() {
-        flatpickr("#resDate", { locale: "ru", minDate: "today", dateFormat: "d.m.Y" });
-        flatpickr("#resTime", { locale: "ru", enableTime: true, noCalendar: true, dateFormat: "H:i", minuteIncrement: 15, minTime: "12:00", maxTime: "23:00" });
-        document.getElementById("incrementGuests")?.addEventListener("click", () => { let val = parseInt(document.getElementById("guestsValue").innerText); if(val<20){ document.getElementById("guestsValue").innerText = val+1; document.getElementById("guestsCount").value = val+1; } });
-        document.getElementById("decrementGuests")?.addEventListener("click", () => { let val = parseInt(document.getElementById("guestsValue").innerText); if(val>1){ document.getElementById("guestsValue").innerText = val-1; document.getElementById("guestsCount").value = val-1; } });
-        document.getElementById("reservationForm")?.addEventListener("submit", (e) => { e.preventDefault(); const name = document.getElementById("guestName").value, phone = document.getElementById("guestPhone").value, date = document.getElementById("resDate").value, time = document.getElementById("resTime").value, guests = document.getElementById("guestsCount").value, wishes = document.getElementById("specialWishes").value; if(!name || !phone || !date || !time) { alert("Заполните поля"); return; } bookings.push({ id: Date.now(), name, phone, date, time, guests, wishes }); saveAll(); renderAdminPanel(); document.getElementById("reservationForm").reset(); document.getElementById("bookingMsg").innerHTML = '<div class="booking-success"><i class="fas fa-check-circle"></i> Столик успешно забронирован!</div>'; setTimeout(()=> document.getElementById("bookingMsg").innerHTML = "", 5000); showNotif(`Новая бронь от ${name}`); });
-    }
-    
-    document.getElementById("feedbackForm")?.addEventListener("submit", (e) => { e.preventDefault(); const name = document.getElementById("feedbackName").value, email = document.getElementById("feedbackEmail").value, msg = document.getElementById("feedbackMessage").value; if(!name || !email || !msg) { alert("Заполните все поля"); return; } document.getElementById("feedbackForm").reset(); document.getElementById("feedbackMsg").innerHTML = '<div class="booking-success"><i class="fas fa-check-circle"></i> Сообщение отправлено!</div>'; setTimeout(()=> document.getElementById("feedbackMsg").innerHTML = "", 5000); showNotif(`Спасибо, ${name}!`); });
-    
-    function setupCategoryFilter() { document.querySelectorAll(".category-icon-btn").forEach(btn => { btn.addEventListener("click", () => { document.querySelectorAll(".category-icon-btn").forEach(b => b.classList.remove("active-cat")); btn.classList.add("active-cat"); currentFilter = btn.dataset.cat; renderMenu(); }); }); }
-    function setupGalleryFilters() { document.querySelectorAll(".gallery-filter-btn").forEach(btn => { btn.addEventListener("click", () => { document.querySelectorAll(".gallery-filter-btn").forEach(b => b.classList.remove("active-gallery-filter")); btn.classList.add("active-gallery-filter"); currentGalleryFilter = btn.dataset.galleryCat; renderGallery(); }); }); }
-    function setupTabs() { document.querySelectorAll(".tab-btn").forEach(tab => { tab.addEventListener("click", () => { const id = tab.dataset.tab; document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active-tab")); document.getElementById(id).classList.add("active-tab"); document.querySelectorAll(".tab-btn").forEach(t => t.classList.remove("active")); tab.classList.add("active"); if(id === "gallery") renderGallery(); if(id === "admin") renderAdminPanel(); if(id === "contacts") { initMap(); renderContactsReviews(); initStarRating(); } if(id === "news") { renderPromotions(); renderNewsArticles(); renderSpecialOffers(); } }); }); }
-    
-    function initMap() { const mapDiv = document.getElementById("map"); if(mapDiv && !mapDiv.innerHTML) mapDiv.innerHTML = `<iframe width="100%" height="100%" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCgG9vJSPmkH1vK9BQd5BfsfOnc1n6Yw6Q&q=Москва+ул.+Гастрономическая+15" allowfullscreen></iframe>`; }
-    
-    function initSwiper() { if(typeof Swiper !== "undefined") { window.reviewsSwiper = new Swiper('.testimonials-swiper', { loop: true, autoplay: { delay: 4000 }, pagination: { el: '.swiper-pagination', clickable: true }, slidesPerView: 1, breakpoints: { 768: { slidesPerView: 2 } } }); window.contactsReviewsSwiper = new Swiper('.contacts-reviews-swiper', { loop: true, autoplay: { delay: 4500 }, pagination: { el: '.contacts-reviews-pagination', clickable: true }, slidesPerView: 1, breakpoints: { 768: { slidesPerView: 2 } } }); } }
-    
-    function renderContactsReviews() {
-        const wrapper = document.getElementById("contactsReviewsWrapper");
-        if (!wrapper) return;
-        wrapper.innerHTML = reviews.map(r => {
-            const stars = (r.stars || 5);
-            const starsHtml = Array.from({length:5}, (_,i) => `<i class="fas fa-star" style="color:${i<stars?'#f4b942':'#ddd'}; font-size:1rem;"></i>`).join('');
-            return `<div class="swiper-slide"><div class="testimonial-card"><i class="fas fa-quote-left" style="color:#b87c4f; font-size:1.5rem; margin-bottom:0.8rem; display:block;"></i><div style="margin-bottom:0.8rem;">${starsHtml}</div><p style="font-style:italic; color:#5c4b32; margin-bottom:1rem;">${r.text}</p><h4 style="color:#b87c4f;">— ${r.author}</h4></div></div>`;
-        }).join("");
-        if(window.contactsReviewsSwiper) window.contactsReviewsSwiper.update();
-    }
-
-    // Инициализация звёздного рейтинга
-    function initStarRating() {
-        const stars = document.querySelectorAll('#starRating i');
-        let selectedStars = 5;
-        stars.forEach(star => {
-            star.addEventListener('mouseenter', () => {
-                const val = parseInt(star.dataset.star);
-                stars.forEach((s,i) => s.style.color = i < val ? '#f4b942' : '#ddd');
-            });
-            star.addEventListener('mouseleave', () => {
-                stars.forEach((s,i) => s.style.color = i < selectedStars ? '#f4b942' : '#ddd');
-            });
-            star.addEventListener('click', () => {
-                selectedStars = parseInt(star.dataset.star);
-                document.getElementById('contactReviewStars').value = selectedStars;
-                stars.forEach((s,i) => s.style.color = i < selectedStars ? '#f4b942' : '#ddd');
-            });
-        });
-        // Установить 5 звёзд по умолчанию
-        stars.forEach(s => s.style.color = '#f4b942');
-    }
-
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('#contactReviewForm button[type="submit"]') || 
-            (e.target.tagName === 'BUTTON' && e.target.closest('#contactReviewForm'))) {
-            // handled below via submit event
-        }
-    });
-
-    document.body.addEventListener('submit', function(e) {
-        if (e.target.id === 'contactReviewForm') {
-            e.preventDefault();
-            const author = document.getElementById('contactReviewAuthor').value.trim() || 'Гость';
-            const text = document.getElementById('contactReviewText').value.trim();
-            const stars = parseInt(document.getElementById('contactReviewStars').value) || 5;
-            if (!text) { alert('Напишите отзыв'); return; }
-            reviews.push({ id: Date.now(), author, text, stars });
-            saveAll();
+            // Рендеринг интерфейса после загрузки
+            renderMenu();
             renderReviews();
-            renderContactsReviews();
             renderAdminPanel();
-            showNotif(`Спасибо, ${author}!`);
-            e.target.reset();
-            document.getElementById('contactReviewMsg').innerHTML = '<div class="booking-success" style="margin-top:1rem;"><i class="fas fa-check-circle"></i> Отзыв опубликован!</div>';
-            setTimeout(() => { const el = document.getElementById('contactReviewMsg'); if(el) el.innerHTML = ''; }, 4000);
-            // Reset stars visually
-            document.querySelectorAll('#starRating i').forEach(s => s.style.color = '#f4b942');
-            document.getElementById('contactReviewStars').value = 5;
+            initSwipers();
+
+        } catch (err) {
+            console.error('Ошибка загрузки данных из Supabase:', err.message);
+            showNotif('Ошибка подключения к базе данных');
         }
+    }
+
+    // РЕНДЕРИНГ МЕНЮ
+    function renderMenu(cat = 'all') {
+        const grid = document.getElementById('menuGrid');
+        if (!grid) return;
+        grid.innerHTML = '';
+        const filtered = cat === 'all' ? menuItems : menuItems.filter(i => i.category === cat);
+        
+        if(filtered.length === 0) {
+            grid.innerHTML = '<div class="container" style="grid-column: 1/-1;"><p style="text-align:center;color:#9b8a76;">В этой категории пока нет блюд.</p></div>';
+            return;
+        }
+
+        filtered.forEach(item => {
+            grid.innerHTML += `
+                <div class="menu-card">
+                    <div class="menu-img"><img src="${item.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500'}" alt="${item.title}"></div>
+                    <div class="menu-content">
+                        <h3>${item.title}</h3>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1rem;">
+                            <span class="menu-price">${item.price} ₽</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    // РЕНДЕРИНГ ОТЗЫВОВ
+    function renderReviews() {
+        const wrapper1 = document.getElementById('reviewsSwiperWrapper');
+        const wrapper2 = document.getElementById('contactsReviewsWrapper');
+        if (!wrapper1 || !wrapper2) return;
+
+        wrapper1.innerHTML = '';
+        wrapper2.innerHTML = '';
+
+        if (reviews.length === 0) {
+            const noReviews = `<div class="swiper-slide"><div class="testimonial-card"><p>Отзывов пока нет. Будьте первым!</p></div></div>`;
+            wrapper1.innerHTML = noReviews;
+            wrapper2.innerHTML = noReviews;
+            return;
+        }
+
+        reviews.forEach(r => {
+            let starsHtml = '';
+            for (let i = 0; i < 5; i++) {
+                starsHtml += `<i class="${i < r.stars ? 'fas' : 'far'} fa-star" style="color:#f4b942; font-size:0.9rem;"></i>`;
+            }
+
+            const cardHtml = `
+                <div class="swiper-slide">
+                    <div class="testimonial-card">
+                        <div style="margin-bottom:0.5rem;">${starsHtml}</div>
+                        <p style="font-style:italic; color:#5c4b32; margin-bottom:1rem;">"${r.text}"</p>
+                        <h4 style="color:#b87c4f;">- ${r.author}</h4>
+                    </div>
+                </div>
+            `;
+            wrapper1.innerHTML += cardHtml;
+            wrapper2.innerHTML += cardHtml;
+        });
+    }
+
+    // УДАЛЕНИЕ ДАННЫХ ЧЕРЕЗ АДМИНКУ
+    async function deleteItem(table, id) {
+        if (!confirm('Вы уверены, что хотите удалить эту запись?')) return;
+        try {
+            const { error } = await supabase.from(table).delete().eq('id', id);
+            if (error) throw error;
+            showNotif('Запись успешно удалена');
+            loadAll(); // Перезагружаем интерфейс
+        } catch (err) {
+            alert('Ошибка при удалении: ' + err.message);
+        }
+    }
+
+    // РЕНДЕРИНГ АДМИН-ПАНЕЛИ
+    function renderAdminPanel() {
+        const panel = document.getElementById('adminPanel');
+        if (!panel) return;
+        
+        panel.innerHTML = `
+            <div class="admin-section">
+                <h3><i class="fas fa-calendar-check"></i> Бронирования столов</h3>
+                <ul class="admin-list">
+                    ${bookings.map(b => `
+                        <li>
+                            <div>
+                                <strong>${b.name}</strong> (${b.phone}) — 📅 ${b.date} в ⏰ ${b.time} <br>
+                                <small>Гостей: ${b.guests} | Пожелания: ${b.wishes || 'нет'}</small>
+                            </div>
+                            <button class="delete-btn" onclick="deleteItem('bookings', ${b.id})">Удалить</button>
+                        </li>
+                    `).join('') || '<li>Бронирований пока нет</li>'}
+                </ul>
+            </div>
+            <div class="admin-section">
+                <h3><i class="fas fa-star"></i> Отзывы гостей</h3>
+                <ul class="admin-list">
+                    ${reviews.map(r => `
+                        <li>
+                            <div>
+                                <strong>${r.author}</strong> — Оценка: ${r.stars}⭐ <br>
+                                <p style="font-size:0.9rem; margin-top:4px;">${r.text}</p>
+                            </div>
+                            <button class="delete-btn" onclick="deleteItem('reviews', ${r.id})">Удалить</button>
+                        </li>
+                    `).join('') || '<li>Отзывов пока нет</li>'}
+                </ul>
+            </div>
+        `;
+    }
+
+    // НАСТРОЙКА ВКЛАДОК (ТАБОВ)
+    function setupTabs() {
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active-tab'));
+                
+                btn.classList.add('active');
+                const tabId = btn.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active-tab');
+
+                if (tabId === 'home' || tabId === 'contacts') {
+                    initSwipers();
+                }
+            });
+        });
+
+        document.getElementById("scrollToBookingBtn")?.addEventListener("click", () => {
+            document.querySelector(".tab-btn[data-tab='booking']").click();
+        });
+    }
+
+    // НАСТРОЙКА ФИЛЬТРОВ КАТЕГОРИЙ МЕНЮ
+    function setupCategoryFilter() {
+        document.querySelectorAll('.category-icon-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.category-icon-btn').forEach(b => b.classList.remove('active-cat'));
+                btn.classList.add('active-cat');
+                renderMenu(btn.getAttribute('data-cat'));
+            });
+        });
+    }
+
+    // ИНИЦИАЛИЗАЦИЯ ФОРМЫ БРОНИРОВАНИЯ
+    function initBookingForm() {
+        flatpickr("#resDate", { minDate: "today", locale: "ru", dateFormat: "d.m.Y" });
+        flatpickr("#resTime", { enableTime: true, noCalendar: true, dateFormat: "H:i", time_24hr: true });
+
+        const guestsVal = document.getElementById('guestsValue');
+        const guestsInput = document.getElementById('guestsCount');
+
+        document.getElementById('incrementGuests')?.addEventListener('click', () => {
+            let val = parseInt(guestsInput.value);
+            if(val < 20) { val++; guestsVal.innerText = val; guestsInput.value = val; }
+        });
+        document.getElementById('decrementGuests')?.addEventListener('click', () => {
+            let val = parseInt(guestsInput.value);
+            if(val > 1) { val--; guestsVal.innerText = val; guestsInput.value = val; }
+        });
+
+        // Отправка формы бронирования в Supabase
+        document.getElementById('reservationForm')?.addEventListener('submit', async (e) => {
+            e.target.style.pointerEvents = 'none'; // Защита от спама кликов
+            e.preventDefault();
+            
+            const newBooking = {
+                name: document.getElementById('guestName').value.trim(),
+                phone: document.getElementById('guestPhone').value.trim(),
+                date: document.getElementById('resDate').value,
+                time: document.getElementById('resTime').value,
+                guests: parseInt(guestsInput.value),
+                wishes: document.getElementById('specialWishes').value.trim()
+            };
+
+            try {
+                const { error } = await supabase.from('bookings').insert([newBooking]);
+                if (error) throw error;
+
+                document.getElementById('bookingMsg').innerHTML = `
+                    <div class="booking-success">
+                        <i class="fas fa-check-circle"></i> Столик успешно забронирован на ${newBooking.date} в ${newBooking.time}!
+                    </div>`;
+                showNotif('Бронирование подтверждено!');
+                e.target.reset();
+                guestsVal.innerText = '2';
+                guestsInput.value = '2';
+                loadAll();
+            } catch (err) {
+                alert('Ошибка бронирования: ' + err.message);
+            } finally {
+                e.target.style.pointerEvents = 'auto';
+            }
+        });
+    }
+
+    // ИНИЦИАЛИЗАЦИЯ СИСТЕМЫ ОТЗЫВОВ И ЗВЕЗД
+    function initReviewSystem() {
+        const stars = document.querySelectorAll('#starRating i');
+        stars.forEach(star => {
+            star.addEventListener('click', (e) => {
+                const val = parseInt(e.target.getAttribute('data-value'));
+                document.getElementById('contactReviewStars').value = val;
+                stars.forEach(s => {
+                    const sVal = parseInt(s.getAttribute('data-value'));
+                    s.style.color = sVal <= val ? '#f4b942' : '#e2d4c8';
+                });
+            });
+        });
+
+        // Отправка отзыва в Supabase
+        document.getElementById('contactReviewForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const author = document.getElementById('contactReviewAuthor').value.trim();
+            const text = document.getElementById('contactReviewText').value.trim();
+            const starsCount = parseInt(document.getElementById('contactReviewStars').value) || 5;
+
+            const newReview = { author, text, stars: starsCount };
+
+            try {
+                const { error } = await supabase.from('reviews').insert([newReview]);
+                if (error) throw error;
+
+                showNotif(`Спасибо за отзыв, ${author}!`);
+                e.target.reset();
+                
+                // Сброс визуальных звезд к 5 по умолчанию
+                stars.forEach(s => s.style.color = '#f4b942');
+                document.getElementById('contactReviewStars').value = 5;
+
+                document.getElementById('contactReviewMsg').innerHTML = '<div class="booking-success" style="margin-top:1rem;"><i class="fas fa-check-circle"></i> Отзыв опубликован!</div>';
+                setTimeout(() => { const el = document.getElementById('contactReviewMsg'); if(el) el.innerHTML = ''; }, 4000);
+                
+                loadAll();
+            } catch (err) {
+                alert('Ошибка при публикации отзыва: ' + err.message);
+            }
+        });
+    }
+
+    // СТАРТ ПРИ ЗАГРУЗКЕ СТРАНИЦЫ
+    window.addEventListener('DOMContentLoaded', () => {
+        loadAll();
+        setupTabs();
+        setupCategoryFilter();
+        initBookingForm();
+        initReviewSystem();
     });
-    
-    document.getElementById("scrollToBookingBtn")?.addEventListener("click", () => { document.querySelector(".tab-btn[data-tab='booking']").click(); });
-    
-    loadAll(); renderMenu(); renderPromotions(); renderNewsArticles(); renderSpecialOffers(); renderGallery(); renderReviews(); renderContactsReviews(); renderAdminPanel(); setupCategoryFilter(); setupGalleryFilters(); setupTabs(); setupNewsTabs(); initMap(); initSwiper(); initBookingForm();
 </script>
 </body>
 </html>
