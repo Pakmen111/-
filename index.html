@@ -12,10 +12,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <!-- Flatpickr -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js" defer></script>
     <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #fffaf5; color: #2c2418; scroll-behavior: smooth; overflow-x: hidden; }
@@ -477,7 +477,7 @@
 </main>
 <footer>© 2025 Ресторан "Вкус & Уют" — Ждём вас в гости</footer>
 
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
 <script>
 // ================================================================
 //  SUPABASE CONFIG
@@ -486,7 +486,16 @@
 const SUPABASE_URL  = 'https://whllxjvanucomvsrmsmt.supabase.co';  // ← замените
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndobGx4anZhbnVjb212c3Jtc210Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1MDk3NzcsImV4cCI6MjA5NjA4NTc3N30.--k9S-lA27f-0BAUd0ji7OgUdvyQyncUu0OeuLomGUg';              // ← замените
 
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+// Ждём пока defer-скрипты загрузятся
+function waitFor(fn, cb, ms = 50) { fn() ? cb() : setTimeout(() => waitFor(fn, cb, ms), ms); }
+
+let sb;
+waitFor(() => typeof supabase !== 'undefined', () => {
+    sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    // Оптимизация: пробуждаем Supabase сразу (fire-and-forget ping)
+    sb.from('reviews').select('id').limit(1);
+    init();
+});
 
 // ================================================================
 //  ЛОКАЛЬНЫЙ КЭШ
@@ -502,30 +511,79 @@ const galleryData = [
 ];
 
 // ================================================================
-//  LOADER
+//  LOADER — тонкая полоска вверху, не блокирует страницу
 // ================================================================
 function showLoader(show) {
     let el = document.getElementById('db-loader');
     if (!el) {
         el = document.createElement('div');
         el.id = 'db-loader';
-        el.innerHTML = `<div style="position:fixed;inset:0;background:rgba(255,250,245,0.92);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;backdrop-filter:blur(4px)">
-            <div style="width:52px;height:52px;border:4px solid #f0e4d8;border-top-color:#b87c4f;border-radius:50%;animation:spin .8s linear infinite"></div>
-            <p style="font-family:'Playfair Display',serif;color:#b87c4f;font-size:1.1rem;font-weight:600">Загружаем данные…</p>
-        </div>`;
+        el.style.cssText = 'position:fixed;top:0;left:0;width:0%;height:3px;background:linear-gradient(90deg,#b87c4f,#e2a072);z-index:99999;transition:width .4s ease,opacity .4s ease;border-radius:0 2px 2px 0';
         document.body.appendChild(el);
-        const s = document.createElement('style');
-        s.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
-        document.head.appendChild(s);
     }
-    el.style.display = show ? 'block' : 'none';
+    if (show) {
+        el.style.opacity = '1';
+        el.style.width = '0%';
+        // Анимируем до 85% — финал будет когда скроем
+        requestAnimationFrame(() => { el.style.transition = 'width 6s cubic-bezier(.1,.8,.2,1)'; el.style.width = '85%'; });
+    } else {
+        el.style.transition = 'width .3s ease, opacity .5s ease .2s';
+        el.style.width = '100%';
+        setTimeout(() => { el.style.opacity = '0'; setTimeout(() => { el.style.width = '0%'; }, 500); }, 300);
+    }
+}
+
+// Скелетон-карточки — показываем пока грузится БД
+function showSkeletons() {
+    const skeletonCard = `<div style="background:white;border-radius:28px;overflow:hidden;box-shadow:0 15px 35px rgba(0,0,0,0.08)">
+        <div style="height:220px;background:linear-gradient(90deg,#f5ede5 25%,#fdf5ee 50%,#f5ede5 75%);background-size:200% 100%;animation:shimmer 1.5s infinite"></div>
+        <div style="padding:1.3rem 1.5rem">
+            <div style="height:18px;background:#f5ede5;border-radius:8px;margin-bottom:10px;width:70%;animation:shimmer 1.5s infinite"></div>
+            <div style="height:13px;background:#f5ede5;border-radius:6px;margin-bottom:6px;width:90%;animation:shimmer 1.5s infinite"></div>
+            <div style="height:13px;background:#f5ede5;border-radius:6px;width:50%;animation:shimmer 1.5s infinite"></div>
+        </div>
+    </div>`;
+    const style = document.createElement('style');
+    style.textContent = '@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}';
+    document.head.appendChild(style);
+    const grid = document.getElementById('menuGrid');
+    if (grid) grid.innerHTML = skeletonCard.repeat(3);
 }
 
 // ================================================================
 //  SUPABASE: ЗАГРУЗКА
 // ================================================================
+//  SUPABASE: ЗАГРУЗКА с sessionStorage-кэшем
+// ================================================================
+const CACHE_KEY = 'sb_cache_v1';
+
 async function dbLoad() {
+    // Берём из кэша — мгновенно, без ожидания Supabase
+    try {
+        const cached = sessionStorage.getItem(CACHE_KEY);
+        if (cached) {
+            const c = JSON.parse(cached);
+            menuItems = c.menuItems || []; bookings = c.bookings || [];
+            newsItems = c.newsItems || []; newsArticles = c.newsArticles || [];
+            specialOffers = c.specialOffers || []; reviews = c.reviews || [];
+            showLoader(false);
+            // Фоновое обновление — не блокирует UI
+            dbLoadFresh().then(saveCache).then(() => {
+                renderMenu(); renderPromotions(); renderNewsArticles();
+                renderSpecialOffers(); renderReviews(); renderContactsReviews();
+            });
+            return;
+        }
+    } catch(e) {}
+
+    // Первый визит — грузим из Supabase с прогресс-баром
     showLoader(true);
+    await dbLoadFresh();
+    saveCache();
+    showLoader(false);
+}
+
+async function dbLoadFresh() {
     try {
         const [m, b, p, a, o, r] = await Promise.all([
             sb.from('menu_items').select('*').order('created_at'),
@@ -542,7 +600,6 @@ async function dbLoad() {
         specialOffers = (o.data || []).map(x => ({ ...x, discountSuffix: x.discount_suffix, desc: x.description }));
         reviews       = r.data || [];
 
-        // Автоматически заполняем стартовыми данными, если таблицы пустые
         if (!menuItems.length)     await seedMenu();
         if (!newsItems.length)     await seedPromotions();
         if (!newsArticles.length)  await seedArticles();
@@ -552,20 +609,28 @@ async function dbLoad() {
         console.error('Supabase load error:', err);
         showNotif('⚠️ Ошибка подключения к БД. Проверьте SUPABASE_URL и SUPABASE_ANON.');
     }
-    showLoader(false);
+}
+
+function saveCache() {
+    try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({ menuItems, bookings, newsItems, newsArticles, specialOffers, reviews })); } catch(e) {}
+}
+function clearCache() {
+    try { sessionStorage.removeItem(CACHE_KEY); } catch(e) {}
 }
 
 // ================================================================
-//  SUPABASE: INSERT / DELETE
+//  SUPABASE: INSERT / DELETE (инвалидируют кэш)
 // ================================================================
 async function dbInsert(table, row) {
     const { data, error } = await sb.from(table).insert(row).select().single();
     if (error) { console.error(error); showNotif('Ошибка сохранения: ' + error.message); return null; }
+    clearCache();
     return data;
 }
 async function dbDelete(table, id) {
     const { error } = await sb.from(table).delete().eq('id', id);
-    if (error) { console.error(error); showNotif('Ошибка удаления'); }
+    if (error) { console.error(error); showNotif('Ошибка удаления'); return; }
+    clearCache();
 }
 
 // ================================================================
@@ -925,13 +990,22 @@ document.getElementById('scrollToBookingBtn')?.addEventListener('click', () => {
 // ================================================================
 //  INIT
 // ================================================================
-(async () => {
+async function init() {
+    // 1. Сразу настраиваем UI — не ждём БД
+    setupCategoryFilter(); setupGalleryFilters(); setupTabs(); setupNewsTabs();
+    initMap(); initBookingForm();
+    showSkeletons(); // показываем скелетоны пока грузится БД
+
+    // 2. Грузим данные (из кэша — мгновенно, из Supabase — с прогресс-баром)
     await dbLoad();
+
+    // 3. Рисуем всё
     renderMenu(); renderPromotions(); renderNewsArticles(); renderSpecialOffers();
     renderGallery(); renderReviews(); renderContactsReviews(); renderAdminPanel();
-    setupCategoryFilter(); setupGalleryFilters(); setupTabs(); setupNewsTabs();
-    initMap(); initSwiper(); initBookingForm();
-})();
+
+    // 4. Swiper инициализируем после рендера
+    waitFor(() => typeof Swiper !== 'undefined', initSwiper);
+}
 </script>
 </body>
 </html>
