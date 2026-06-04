@@ -322,7 +322,7 @@
         /* Подвал */
         .site-footer { background: #2c2418; color: rgba(255,255,255,0.75); margin-top: 3rem; }
         .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2.5rem; max-width: 1300px; margin: 0 auto; padding: 3rem 2rem 2rem; }
-        .footer-brand .logo-text { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: white; font-weight: 700; margin-bottom: 0.8rem; display: block; text-align: left; }
+        .footer-brand .logo-text { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: white; font-weight: 700; margin-bottom: 0.8rem; }
         .footer-brand p { font-size: 0.88rem; line-height: 1.7; max-width: 260px; }
         .footer-brand .footer-social { display: flex; gap: 0.8rem; margin-top: 1.2rem; }
         .footer-social a { width: 38px; height: 38px; background: rgba(255,255,255,0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.6); transition: all .2s; text-decoration: none; }
@@ -350,6 +350,12 @@
             .stats-row { gap: 1rem; }
         }
 
+        .avg-rating-block { display:flex; align-items:center; justify-content:center; gap:1.2rem; background:white; border-radius:24px; padding:1rem 2rem; margin:0 auto 1.5rem; width:fit-content; box-shadow:0 6px 20px rgba(0,0,0,0.06); }
+        .avg-rating-num { font-family:'Playfair Display',serif; font-size:3rem; font-weight:800; color:#b87c4f; line-height:1; }
+        .avg-rating-right { display:flex; flex-direction:column; gap:4px; }
+        .avg-rating-stars { display:flex; gap:3px; }
+        .avg-rating-stars i { font-size:1.1rem; }
+        .avg-rating-count { font-size:0.8rem; color:#9b8a76; }
         /* Модальное окно пароля */
         .pwd-modal-bg { position:fixed; inset:0; background:rgba(44,36,24,0.55); z-index:5000; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px); animation:fadeInModal .25s ease; }
         .pwd-modal { background:white; border-radius:32px; padding:2.5rem 2rem; width:100%; max-width:380px; box-shadow:0 30px 60px rgba(0,0,0,0.2); text-align:center; }
@@ -492,7 +498,8 @@
             <!-- Отзывы -->
             <div style="background: #fcf6ef; border-radius: 40px; padding: 2.5rem 1rem; margin: 2rem 0;">
                 <h2 style="text-align: center; margin-bottom: 0.5rem;"><i class="fas fa-star" style="color:#f4b942"></i> Отзывы гостей</h2>
-                <p style="text-align:center; color:#9b8a76; margin-bottom:1.5rem; font-size:0.9rem;">Что говорят те, кто уже был у нас</p>
+                <p style="text-align:center; color:#9b8a76; margin-bottom:1rem; font-size:0.9rem;">Что говорят те, кто уже был у нас</p>
+                <div id="homeAvgRating"></div>
                 <div class="swiper testimonials-swiper">
                     <div class="swiper-wrapper" id="reviewsSwiperWrapper"></div>
                     <div class="swiper-pagination"></div>
@@ -602,7 +609,8 @@
 
             <!-- ОТЗЫВЫ В КОНТАКТАХ -->
             <div style="background: #fcf6ef; border-radius: 40px; padding: 2rem 1rem; margin-top: 2rem;">
-                <h2 style="text-align: center; margin-bottom: 1.5rem;"><i class="fas fa-star"></i> Отзывы гостей</h2>
+                <h2 style="text-align: center; margin-bottom: 0.8rem;"><i class="fas fa-star"></i> Отзывы гостей</h2>
+                <div id="contactsAvgRating"></div>
                 <div class="swiper contacts-reviews-swiper">
                     <div class="swiper-wrapper" id="contactsReviewsWrapper"></div>
                     <div class="swiper-pagination contacts-reviews-pagination"></div>
@@ -946,7 +954,36 @@ function renderSpecialOffers() {
         </div>`).join('');
 }
 
+function calcAvgRating() {
+    if (!reviews.length) return { avg: 0, count: 0 };
+    const sum = reviews.reduce((acc, r) => acc + (r.stars || 5), 0);
+    return { avg: Math.round((sum / reviews.length) * 10) / 10, count: reviews.length };
+}
+
+function renderAvgRatingBlock(containerId) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    if (!reviews.length) { el.innerHTML = ''; return; }
+    const { avg, count } = calcAvgRating();
+    const fullStars = Math.floor(avg);
+    const halfStar = avg - fullStars >= 0.5;
+    let starsHtml = '';
+    for (let i = 0; i < 5; i++) {
+        if (i < fullStars) starsHtml += `<i class="fas fa-star" style="color:#f4b942"></i>`;
+        else if (i === fullStars && halfStar) starsHtml += `<i class="fas fa-star-half-alt" style="color:#f4b942"></i>`;
+        else starsHtml += `<i class="far fa-star" style="color:#ddd"></i>`;
+    }
+    el.innerHTML = `<div class="avg-rating-block">
+        <div class="avg-rating-num">${avg.toFixed(1)}</div>
+        <div class="avg-rating-right">
+            <div class="avg-rating-stars">${starsHtml}</div>
+            <div class="avg-rating-count">на основе ${count} ${count === 1 ? 'отзыва' : count < 5 ? 'отзывов' : 'отзывов'}</div>
+        </div>
+    </div>`;
+}
+
 function renderReviews() {
+    renderAvgRatingBlock('homeAvgRating');
     document.getElementById('reviewsSwiperWrapper').innerHTML = reviews.map(r => {
         const stars = r.stars || 5;
         const sh = Array.from({length:5}, (_,i) => `<i class="fas fa-star" style="color:${i<stars?'#f4b942':'#ddd'};font-size:1rem"></i>`).join('');
@@ -956,6 +993,7 @@ function renderReviews() {
 }
 
 function renderContactsReviews() {
+    renderAvgRatingBlock('contactsAvgRating');
     const wrapper = document.getElementById('contactsReviewsWrapper');
     if (!wrapper) return;
     wrapper.innerHTML = reviews.map(r => {
