@@ -288,6 +288,68 @@
         .modal-content { max-width: 90%; max-height: 90%; border-radius: 20px; }
         .modal-close { position: absolute; top: 20px; right: 30px; color: white; font-size: 2rem; cursor: pointer; }
         .modal-caption { position: absolute; bottom: 20px; left: 0; right: 0; text-align: center; color: white; background: rgba(0,0,0,0.6); padding: 0.8rem; }
+        /* О ресторане */
+        .about-section { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; margin: 3rem 0; }
+        .about-section.reverse { direction: rtl; }
+        .about-section.reverse > * { direction: ltr; }
+        .about-img { border-radius: 32px; overflow: hidden; height: 380px; box-shadow: 0 20px 50px rgba(0,0,0,0.12); }
+        .about-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+        .about-img:hover img { transform: scale(1.04); }
+        .about-text { padding: 1rem 0; }
+        .about-tag { display: inline-block; background: #f5ede5; color: #b87c4f; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 5px 14px; border-radius: 20px; margin-bottom: 1rem; }
+        .about-text h2 { font-family: 'Playfair Display', serif; font-size: 2rem; color: #2c2418; margin-bottom: 1rem; line-height: 1.25; }
+        .about-text p { color: #6b5c4a; line-height: 1.8; font-size: 0.95rem; margin-bottom: 1rem; }
+        .about-text p:last-of-type { margin-bottom: 0; }
+
+        /* Цифры */
+        .stats-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; margin: 3rem 0; background: linear-gradient(135deg, #2c2418, #4a3828); border-radius: 32px; padding: 2.5rem 2rem; }
+        .stat-item { text-align: center; color: white; flex: 1; min-width: 120px; }
+        .stat-num { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 800; color: #e2a072; line-height: 1; }
+        .stat-label { font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-top: 0.4rem; }
+
+        /* История — таймлайн */
+        .history-section { margin: 3rem 0; }
+        .history-section h2 { font-family: 'Playfair Display', serif; font-size: 1.9rem; text-align: center; margin-bottom: 2.5rem; color: #2c2418; }
+        .timeline { position: relative; max-width: 700px; margin: 0 auto; }
+        .timeline::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, #b87c4f, #e2a072); transform: translateX(-50%); }
+        .tl-item { display: flex; gap: 2rem; align-items: flex-start; margin-bottom: 2.5rem; position: relative; }
+        .tl-item:nth-child(even) { flex-direction: row-reverse; text-align: right; }
+        .tl-dot { position: absolute; left: 50%; top: 6px; width: 14px; height: 14px; background: #b87c4f; border-radius: 50%; transform: translateX(-50%); border: 3px solid #fffaf5; box-shadow: 0 0 0 3px #b87c4f; flex-shrink: 0; z-index: 1; }
+        .tl-content { background: white; border-radius: 20px; padding: 1.2rem 1.5rem; box-shadow: 0 8px 24px rgba(0,0,0,0.07); width: calc(50% - 2rem); }
+        .tl-year { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 800; color: #b87c4f; }
+        .tl-content p { font-size: 0.88rem; color: #6b5c4a; line-height: 1.6; margin-top: 0.3rem; }
+
+        /* Подвал */
+        .site-footer { background: #2c2418; color: rgba(255,255,255,0.75); margin-top: 3rem; }
+        .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2.5rem; max-width: 1300px; margin: 0 auto; padding: 3rem 2rem 2rem; }
+        .footer-brand .logo-text { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: white; font-weight: 700; margin-bottom: 0.8rem; }
+        .footer-brand p { font-size: 0.88rem; line-height: 1.7; max-width: 260px; }
+        .footer-brand .footer-social { display: flex; gap: 0.8rem; margin-top: 1.2rem; }
+        .footer-social a { width: 38px; height: 38px; background: rgba(255,255,255,0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.6); transition: all .2s; text-decoration: none; }
+        .footer-social a:hover { background: #b87c4f; color: white; }
+        .footer-col h4 { color: white; font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; letter-spacing: 0.3px; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 0.55rem; font-size: 0.87rem; }
+        .footer-col ul li a { color: rgba(255,255,255,0.6); text-decoration: none; transition: color .2s; cursor: pointer; }
+        .footer-col ul li a:hover { color: #e2a072; }
+        .footer-col ul li i { margin-right: 7px; color: #b87c4f; width: 14px; }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); padding: 1.2rem 2rem; text-align: center; font-size: 0.82rem; color: rgba(255,255,255,0.4); max-width: 1300px; margin: 0 auto; }
+
+        @media (max-width: 900px) {
+            .about-section { grid-template-columns: 1fr; }
+            .about-section.reverse { direction: ltr; }
+            .about-img { height: 260px; }
+            .footer-top { grid-template-columns: 1fr 1fr; }
+            .timeline::before { left: 20px; }
+            .tl-item, .tl-item:nth-child(even) { flex-direction: column; text-align: left; padding-left: 50px; }
+            .tl-content { width: 100%; }
+            .tl-dot { left: 20px; }
+        }
+        @media (max-width: 600px) {
+            .footer-top { grid-template-columns: 1fr; }
+            .stats-row { gap: 1rem; }
+        }
+
         /* Модальное окно пароля */
         .pwd-modal-bg { position:fixed; inset:0; background:rgba(44,36,24,0.55); z-index:5000; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px); animation:fadeInModal .25s ease; }
         .pwd-modal { background:white; border-radius:32px; padding:2.5rem 2rem; width:100%; max-width:380px; box-shadow:0 30px 60px rgba(0,0,0,0.2); text-align:center; }
@@ -341,19 +403,102 @@
             </div>
         </div>
         <div class="container">
+
+            <!-- Фишки -->
             <div class="features">
-                <div class="feature-card"><i class="fas fa-chef-hat"></i><h3>Шеф из Италии</h3><p>Авторские рецепты</p></div>
+                <div class="feature-card"><i class="fas fa-utensils"></i><h3>Шеф из Италии</h3><p>Авторские рецепты</p></div>
                 <div class="feature-card"><i class="fas fa-leaf"></i><h3>Свежайшие продукты</h3><p>Фермерские хозяйства</p></div>
                 <div class="feature-card"><i class="fas fa-wine-glass-alt"></i><h3>Винная карта</h3><p>Более 200 позиций</p></div>
                 <div class="feature-card"><i class="fas fa-music"></i><h3>Живая музыка</h3><p>Каждую пятницу</p></div>
             </div>
-            <div style="background: #fcf6ef; border-radius: 40px; padding: 2rem 1rem; margin: 2rem 0;">
-                <h2 style="text-align: center;"><i class="fas fa-star"></i> Отзывы гостей</h2>
+
+            <!-- О ресторане -->
+            <div class="about-section">
+                <div class="about-img">
+                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop" alt="Интерьер ресторана">
+                </div>
+                <div class="about-text">
+                    <span class="about-tag"><i class="fas fa-info-circle"></i> О нас</span>
+                    <h2>Место, где еда становится искусством</h2>
+                    <p>«Вкус & Уют» — это больше чем ресторан. Это пространство, где каждый вечер превращается в маленький праздник. Мы создали место, куда хочется возвращаться снова и снова — за теплотой, за вкусом, за атмосферой.</p>
+                    <p>Наш шеф-повар Марко Бруно приехал из Болоньи с двадцатилетним опытом работы в мишленовских ресторанах Европы. Он собрал команду единомышленников и создал меню, в котором итальянские техники встречаются с российскими сезонными продуктами.</p>
+                    <p>Мы работаем только с проверенными фермерскими хозяйствами Подмосковья и сотрудничаем с местными виноделами. Каждое блюдо — история, рассказанная через вкус.</p>
+                </div>
+            </div>
+
+            <!-- Цифры -->
+            <div class="stats-row">
+                <div class="stat-item"><div class="stat-num">12</div><div class="stat-label">лет на рынке</div></div>
+                <div class="stat-item"><div class="stat-num">48&nbsp;000+</div><div class="stat-label">довольных гостей</div></div>
+                <div class="stat-item"><div class="stat-num">200+</div><div class="stat-label">позиций в меню</div></div>
+                <div class="stat-item"><div class="stat-num">3</div><div class="stat-label">награды «Лучший ресторан»</div></div>
+            </div>
+
+            <!-- История -->
+            <div class="history-section">
+                <h2><i class="fas fa-book-open" style="color:#b87c4f"></i> Наша история</h2>
+                <div class="timeline">
+                    <div class="tl-item">
+                        <div class="tl-dot"></div>
+                        <div class="tl-content">
+                            <div class="tl-year">2013</div>
+                            <p>Открытие первого зала на 40 мест на Гастрономической улице. Скромное начало с меню из 30 позиций и горящими глазами молодой команды.</p>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-dot"></div>
+                        <div class="tl-content">
+                            <div class="tl-year">2016</div>
+                            <p>Приглашение шеф-повара Марко Бруно. Полное переосмысление меню, запуск авторской кухни и первая публикация в журнале «Гастроном».</p>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-dot"></div>
+                        <div class="tl-content">
+                            <div class="tl-year">2018</div>
+                            <p>Расширение: открытие второго зала и летней веранды на 60 мест. Первая награда «Лучший ресторан Москвы» по версии TimeOut.</p>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-dot"></div>
+                        <div class="tl-content">
+                            <div class="tl-year">2021</div>
+                            <p>Запуск собственного погреба с коллекцией вин из 200+ позиций. Начало сотрудничества с фермерскими хозяйствами Подмосковья.</p>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-dot"></div>
+                        <div class="tl-content">
+                            <div class="tl-year">Сегодня</div>
+                            <p>«Вкус & Уют» — это 120 посадочных мест, живая музыка по пятницам, кулинарные мастер-классы и тысячи постоянных гостей со всей Москвы.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Атмосфера -->
+            <div class="about-section reverse">
+                <div class="about-img">
+                    <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=600&fit=crop" alt="Блюда ресторана">
+                </div>
+                <div class="about-text">
+                    <span class="about-tag"><i class="fas fa-concierge-bell"></i> Кухня</span>
+                    <h2>Философия вкуса</h2>
+                    <p>Мы верим, что хорошая еда — это баланс между традицией и экспериментом. Наше меню меняется четыре раза в год, следуя сезону и наличию лучших местных продуктов.</p>
+                    <p>Всё, что появляется на вашем столе, приготовлено в тот же день. Никаких заготовок и полуфабрикатов — только живые продукты, огонь и руки профессионалов.</p>
+                </div>
+            </div>
+
+            <!-- Отзывы -->
+            <div style="background: #fcf6ef; border-radius: 40px; padding: 2.5rem 1rem; margin: 2rem 0;">
+                <h2 style="text-align: center; margin-bottom: 0.5rem;"><i class="fas fa-star" style="color:#f4b942"></i> Отзывы гостей</h2>
+                <p style="text-align:center; color:#9b8a76; margin-bottom:1.5rem; font-size:0.9rem;">Что говорят те, кто уже был у нас</p>
                 <div class="swiper testimonials-swiper">
                     <div class="swiper-wrapper" id="reviewsSwiperWrapper"></div>
                     <div class="swiper-pagination"></div>
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -494,7 +639,52 @@
         </div>
     </div>
 </main>
-<footer>© 2025 Ресторан "Вкус & Уют" — Ждём вас в гости</footer>
+
+<footer class="site-footer">
+    <div class="footer-top">
+        <div class="footer-brand">
+            <div class="logo-text">Вкус & Уют</div>
+            <p>Ресторан авторской кухни в самом сердце Москвы. Место, куда хочется возвращаться снова и снова.</p>
+            <div class="footer-social">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-vk"></i></a>
+                <a href="#"><i class="fab fa-telegram"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h4>Навигация</h4>
+            <ul>
+                <li><a onclick="document.querySelector('[data-tab=home]').click()"><i class="fas fa-home"></i>Главная</a></li>
+                <li><a onclick="document.querySelector('[data-tab=menu]').click()"><i class="fas fa-utensils"></i>Меню</a></li>
+                <li><a onclick="document.querySelector('[data-tab=booking]').click()"><i class="fas fa-calendar-check"></i>Бронь стола</a></li>
+                <li><a onclick="document.querySelector('[data-tab=gallery]').click()"><i class="fas fa-images"></i>Галерея</a></li>
+                <li><a onclick="document.querySelector('[data-tab=news]').click()"><i class="fas fa-bullhorn"></i>Акции</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Контакты</h4>
+            <ul>
+                <li><a href="tel:+74951234567"><i class="fas fa-phone-alt"></i>+7 (495) 123-45-67</a></li>
+                <li><a href="mailto:hello@vkus-i-uet.ru"><i class="fas fa-envelope"></i>hello@vkus-i-uet.ru</a></li>
+                <li><a><i class="fas fa-map-marker-alt"></i>ул. Гастрономическая, 15</a></li>
+                <li><a onclick="document.querySelector('[data-tab=contacts]').click()"><i class="fas fa-comment-alt"></i>Написать нам</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Часы работы</h4>
+            <ul>
+                <li><a><i class="far fa-clock"></i>Пн: 12:00 – 23:00</a></li>
+                <li><a><i class="far fa-clock"></i>Вт–Чт: 11:00 – 00:00</a></li>
+                <li><a><i class="far fa-clock"></i>Пт–Сб: 11:00 – 02:00</a></li>
+                <li><a><i class="far fa-clock"></i>Вс: 11:00 – 23:00</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        © 2025 Ресторан «Вкус & Уют» — Все права защищены &nbsp;·&nbsp; г. Москва, ул. Гастрономическая, 15
+    </div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
 <script>
