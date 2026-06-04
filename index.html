@@ -255,16 +255,45 @@
         .submit-btn { background: #b87c4f; width: 100%; padding: 16px; font-size: 1rem; font-weight: 700; border-radius: 40px; border: none; color: white; cursor: pointer; transition: 0.2s; }
         .submit-btn:hover { background: #9b623c; transform: translateY(-2px); }
 
-        /* Галерея */
+        /* Галерея — слайдер */
+        .gallery-hero { background: linear-gradient(135deg, #2c2418 0%, #4a3828 100%); border-radius: 32px; padding: 2.5rem; text-align: center; color: white; margin-bottom: 2rem; }
         .gallery-filters { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 2rem; justify-content: center; }
         .gallery-filter-btn { background: transparent; border: 1.5px solid #e2d4c8; padding: 0.6rem 1.8rem; border-radius: 40px; font-weight: 600; cursor: pointer; transition: all 0.2s; color: #5c4b32; }
         .gallery-filter-btn.active-gallery-filter, .gallery-filter-btn:hover { background: #b87c4f; border-color: #b87c4f; color: white; }
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.8rem; }
-        .gallery-item { position: relative; border-radius: 24px; overflow: hidden; cursor: pointer; aspect-ratio: 1 / 0.9; box-shadow: 0 10px 25px rgba(0,0,0,0.08); transition: all 0.3s; }
-        .gallery-item:hover { transform: translateY(-8px); }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
-        .gallery-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); padding: 1.5rem; color: white; transform: translateY(100%); transition: transform 0.3s; }
-        .gallery-item:hover .gallery-overlay { transform: translateY(0); }
+
+        .gallery-slider-wrap { position: relative; border-radius: 32px; overflow: hidden; background: #1a1008; box-shadow: 0 30px 60px rgba(0,0,0,0.2); margin-bottom: 1.5rem; }
+        .gallery-slider-main { position: relative; height: 520px; overflow: hidden; }
+        .gallery-slide { position: absolute; inset: 0; opacity: 0; transition: opacity .5s ease; }
+        .gallery-slide.active { opacity: 1; z-index: 1; }
+        .gallery-slide img { width: 100%; height: 100%; object-fit: cover; }
+        .gallery-slide-caption { position: absolute; bottom: 0; left: 0; right: 0; padding: 2rem 2rem 1.5rem; background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%); color: white; z-index: 2; }
+        .gallery-slide-caption h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 0.2rem; }
+        .gallery-slide-caption p { font-size: 0.9rem; opacity: 0.8; }
+        .gallery-slide-caption .gallery-cat-badge { display: inline-block; background: rgba(184,124,79,0.85); color: white; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 3px 10px; border-radius: 20px; margin-bottom: 0.5rem; }
+
+        .gallery-nav { position: absolute; top: 50%; transform: translateY(-50%); z-index: 3; background: rgba(255,255,255,0.15); border: none; color: white; width: 48px; height: 48px; border-radius: 50%; font-size: 1.1rem; cursor: pointer; transition: all .2s; backdrop-filter: blur(4px); }
+        .gallery-nav:hover { background: rgba(184,124,79,0.8); }
+        .gallery-nav.prev { left: 16px; }
+        .gallery-nav.next { right: 16px; }
+
+        .gallery-counter { position: absolute; top: 16px; right: 16px; z-index: 3; background: rgba(0,0,0,0.45); color: white; font-size: 0.82rem; font-weight: 600; padding: 5px 12px; border-radius: 20px; backdrop-filter: blur(4px); }
+
+        .gallery-dots { display: flex; justify-content: center; gap: 8px; padding: 1rem 0 0.5rem; }
+        .gallery-dot { width: 8px; height: 8px; border-radius: 50%; background: #e2d4c8; border: none; cursor: pointer; padding: 0; transition: all .2s; }
+        .gallery-dot.active { background: #b87c4f; width: 24px; border-radius: 4px; }
+
+        .gallery-thumbs { display: flex; gap: 0.8rem; overflow-x: auto; padding: 0.5rem 0 1rem; scrollbar-width: thin; scrollbar-color: #e2d4c8 transparent; }
+        .gallery-thumbs::-webkit-scrollbar { height: 4px; }
+        .gallery-thumbs::-webkit-scrollbar-thumb { background: #e2d4c8; border-radius: 2px; }
+        .gallery-thumb { flex-shrink: 0; width: 80px; height: 60px; border-radius: 12px; overflow: hidden; cursor: pointer; opacity: 0.55; transition: all .2s; border: 2px solid transparent; }
+        .gallery-thumb.active { opacity: 1; border-color: #b87c4f; }
+        .gallery-thumb:hover { opacity: 0.85; }
+        .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+        .gallery-empty { text-align: center; padding: 4rem; background: #fcf8f3; border-radius: 32px; color: #9b8a76; }
+        .gallery-empty i { font-size: 3rem; display: block; margin-bottom: 1rem; }
+
+        @media (max-width: 700px) { .gallery-slider-main { height: 280px; } }
 
         /* Контакты */
         .contacts-hero { background: linear-gradient(135deg, #2c2418 0%, #4a3828 100%); border-radius: 32px; padding: 2.5rem; text-align: center; color: white; margin-bottom: 2.5rem; }
@@ -594,14 +623,14 @@
     <!-- ГАЛЕРЕЯ -->
     <div id="gallery" class="tab-content">
         <div class="container">
-            <div style="text-align: center; margin-bottom: 2rem;"><h2><i class="fas fa-camera-retro"></i> Фотогалерея</h2><p>Атмосфера, изысканные блюда и яркие события</p></div>
+            <div class="gallery-hero"><h2><i class="fas fa-camera-retro"></i> Фотогалерея</h2><p>Атмосфера, изысканные блюда и яркие события</p></div>
             <div class="gallery-filters" id="galleryFilters">
                 <button class="gallery-filter-btn active-gallery-filter" data-gallery-cat="all">Все</button>
                 <button class="gallery-filter-btn" data-gallery-cat="interior">Интерьеры</button>
                 <button class="gallery-filter-btn" data-gallery-cat="dishes">Блюда</button>
                 <button class="gallery-filter-btn" data-gallery-cat="events">Мероприятия</button>
             </div>
-            <div class="gallery-grid" id="galleryGrid"></div>
+            <div id="gallerySlider"></div>
         </div>
     </div>
 
@@ -767,7 +796,7 @@ waitFor(() => typeof supabase !== 'undefined', () => {
 let menuItems = [], bookings = [], newsItems = [], newsArticles = [],
     specialOffers = [], reviews = [];
 
-const galleryData = [
+let galleryData = [
     { id:1, category:'interior', title:'Основной зал',   desc:'Уютная атмосфера',   img:'https://placehold.co/600x500/3a2c1e/d4956a?text=Зал' },
     { id:2, category:'interior', title:'Винный уголок',  desc:'Более 200 сортов',   img:'https://placehold.co/600x500/1e1410/c8804a?text=Винный+уголок' },
     { id:3, category:'dishes',   title:'Стейк',          desc:'Мраморная говядина', img:'https://placehold.co/600x500/3a1a0a/e8906a?text=Стейк' },
@@ -869,6 +898,13 @@ async function dbLoadFresh() {
         if (!newsArticles.length)  await seedArticles();
         if (!specialOffers.length) await seedOffers();
         if (!reviews.length)       await seedReviews();
+
+        // Галерея из Supabase
+        const g = await sb.from('gallery_items').select('*').order('created_at');
+        if (g.data && g.data.length) {
+            galleryData.length = 0;
+            g.data.forEach(x => galleryData.push(x));
+        }
     } catch (err) {
         console.error('Supabase load error:', err);
         showNotif('⚠️ Ошибка подключения к БД. Проверьте SUPABASE_URL и SUPABASE_ANON.');
@@ -1111,6 +1147,21 @@ function renderAdminPanel() {
         <button class="admin-logout-btn" id="adminLogoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</button>
     </div>
 
+    <div class="admin-section"><h3>🖼️ Галерея</h3>
+        <form id="addGalleryForm" style="display:grid;gap:0.6rem;">
+            <input type="text" id="galleryTitle" placeholder="Название фото">
+            <input type="text" id="galleryDesc" placeholder="Описание">
+            <input type="text" id="galleryImg" placeholder="URL изображения">
+            <select id="galleryCategory">
+                <option value="interior">Интерьер</option>
+                <option value="dishes">Блюда</option>
+                <option value="events">Мероприятия</option>
+            </select>
+            <button type="submit">➕ Добавить фото</button>
+        </form>
+        <ul id="galleryAdminList" class="admin-list" style="margin-top:1rem">${galleryData.map(g=>`<li><div><strong>${g.title}</strong><br><span style="font-size:0.82rem;color:#8a7a68">${CAT_LABELS[g.category]||g.category} · ${g.desc}</span></div><button class="delete-btn" data-id="${g.id}" data-type="gallery">🗑️</button></li>`).join('')}</ul>
+    </div>
+
     <div class="admin-section"><h3>➕ Добавить блюдо</h3>
         <form id="addDishForm">
             <input type="text" id="dishName" placeholder="Название">
@@ -1176,6 +1227,16 @@ function renderAdminPanel() {
 }
 
 function attachAdminEvents() {
+    document.getElementById('addGalleryForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const title = document.getElementById('galleryTitle').value.trim();
+        const img   = document.getElementById('galleryImg').value.trim();
+        if (!title || !img) return;
+        const row = { title, img, desc: document.getElementById('galleryDesc').value.trim() || '', category: document.getElementById('galleryCategory').value };
+        const data = await dbInsert('gallery_items', row);
+        if (data) { galleryData.push(data); renderGallery(); renderAdminPanel(); showNotif('Фото добавлено'); e.target.reset(); }
+    });
+
     document.getElementById('addDishForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const name = document.getElementById('dishName').value.trim();
@@ -1229,6 +1290,7 @@ function attachAdminEvents() {
     document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
             const id = parseInt(btn.dataset.id), type = btn.dataset.type;
+            if (type === 'gallery')  { await dbDelete('gallery_items', id);  galleryData.splice(galleryData.findIndex(g=>g.id===id),1); renderGallery(); renderAdminPanel(); showNotif('Фото удалено'); }
             if (type === 'news')    { await dbDelete('promotions', id);    newsItems     = newsItems.filter(n=>n.id!==id);         renderPromotions();    renderAdminPanel(); showNotif('Акция удалена'); }
             if (type === 'article') { await dbDelete('news_articles', id); newsArticles  = newsArticles.filter(a=>a.id!==id);      renderNewsArticles();  renderAdminPanel(); showNotif('Новость удалена'); }
             if (type === 'offer')   { await dbDelete('special_offers', id);specialOffers = specialOffers.filter(o=>o.id!==id);     renderSpecialOffers(); renderAdminPanel(); showNotif('Предложение удалено'); }
@@ -1302,18 +1364,89 @@ document.getElementById('feedbackForm')?.addEventListener('submit', (e) => {
 //  GALLERY / SWIPER / MAP / TABS
 // ================================================================
 let currentGalleryFilter = 'all';
+let gallerySliderIndex = 0;
+let gallerySliderTimer = null;
+
+const CAT_LABELS = { interior: 'Интерьер', dishes: 'Блюда', events: 'Мероприятия' };
+
 function renderGallery() {
-    const f = currentGalleryFilter === 'all' ? galleryData : galleryData.filter(i => i.category === currentGalleryFilter);
-    document.getElementById('galleryGrid').innerHTML = f.map(i => `<div class="gallery-item" data-img="${i.img}" data-title="${i.title}" data-desc="${i.desc}"><img src="${i.img}" alt="${i.title}"><div class="gallery-overlay"><h4>${i.title}</h4><p>${i.desc}</p></div></div>`).join('');
-    document.querySelectorAll('.gallery-item').forEach(el => { el.addEventListener('click', () => openModal(el.dataset.img, el.dataset.title, el.dataset.desc)); });
+    const container = document.getElementById('gallerySlider');
+    if (!container) return;
+    const items = currentGalleryFilter === 'all'
+        ? galleryData
+        : galleryData.filter(i => i.category === currentGalleryFilter);
+
+    if (!items.length) {
+        container.innerHTML = `<div class="gallery-empty"><i class="fas fa-images"></i><p>Фотографий пока нет. Добавьте их в админ-панели.</p></div>`;
+        return;
+    }
+    gallerySliderIndex = Math.min(gallerySliderIndex, items.length - 1);
+
+    const slides = items.map((item, idx) => `
+        <div class="gallery-slide${idx === gallerySliderIndex ? ' active' : ''}" data-idx="${idx}">
+            <img src="${item.img}" alt="${item.title}" loading="lazy">
+            <div class="gallery-slide-caption">
+                <div class="gallery-cat-badge">${CAT_LABELS[item.category] || item.category}</div>
+                <h3>${item.title}</h3>
+                <p>${item.desc}</p>
+            </div>
+        </div>`).join('');
+
+    const thumbs = items.map((item, idx) => `
+        <div class="gallery-thumb${idx === gallerySliderIndex ? ' active' : ''}" data-idx="${idx}">
+            <img src="${item.img}" alt="${item.title}" loading="lazy">
+        </div>`).join('');
+
+    const dots = items.map((_, idx) => `
+        <button class="gallery-dot${idx === gallerySliderIndex ? ' active' : ''}" data-idx="${idx}"></button>`).join('');
+
+    container.innerHTML = `
+        <div class="gallery-slider-wrap">
+            <div class="gallery-slider-main" id="gallerySlides">${slides}</div>
+            <button class="gallery-nav prev" id="galPrev"><i class="fas fa-chevron-left"></i></button>
+            <button class="gallery-nav next" id="galNext"><i class="fas fa-chevron-right"></i></button>
+            <div class="gallery-counter" id="galCounter">${gallerySliderIndex + 1} / ${items.length}</div>
+        </div>
+        <div class="gallery-dots" id="galDots">${dots}</div>
+        <div class="gallery-thumbs" id="galThumbs">${thumbs}</div>`;
+
+    // Навигация
+    function goTo(idx) {
+        const slides = container.querySelectorAll('.gallery-slide');
+        const dots   = container.querySelectorAll('.gallery-dot');
+        const thumbs = container.querySelectorAll('.gallery-thumb');
+        slides[gallerySliderIndex]?.classList.remove('active');
+        dots[gallerySliderIndex]?.classList.remove('active');
+        thumbs[gallerySliderIndex]?.classList.remove('active');
+        gallerySliderIndex = (idx + items.length) % items.length;
+        slides[gallerySliderIndex]?.classList.add('active');
+        dots[gallerySliderIndex]?.classList.add('active');
+        thumbs[gallerySliderIndex]?.classList.add('active');
+        thumbs[gallerySliderIndex]?.scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' });
+        document.getElementById('galCounter').textContent = `${gallerySliderIndex + 1} / ${items.length}`;
+    }
+
+    document.getElementById('galPrev').addEventListener('click', () => goTo(gallerySliderIndex - 1));
+    document.getElementById('galNext').addEventListener('click', () => goTo(gallerySliderIndex + 1));
+    container.querySelectorAll('.gallery-dot').forEach(d => d.addEventListener('click', () => goTo(+d.dataset.idx)));
+    container.querySelectorAll('.gallery-thumb').forEach(t => t.addEventListener('click', () => goTo(+t.dataset.idx)));
+
+    // Свайп на мобильных
+    let touchX = 0;
+    const mainEl = document.getElementById('gallerySlides');
+    mainEl.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+    mainEl.addEventListener('touchend', e => {
+        const diff = touchX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 40) goTo(gallerySliderIndex + (diff > 0 ? 1 : -1));
+    });
+
+    // Автослайд
+    if (gallerySliderTimer) clearInterval(gallerySliderTimer);
+    gallerySliderTimer = setInterval(() => goTo(gallerySliderIndex + 1), 5000);
 }
-let modal = null;
-function openModal(img, title, desc) {
-    if (!modal) { modal = document.createElement('div'); modal.className = 'modal'; modal.innerHTML = `<span class="modal-close">&times;</span><img class="modal-content" id="modalImage"><div class="modal-caption" id="modalCaption"></div>`; document.body.appendChild(modal); modal.addEventListener('click', (e) => { if(e.target===modal||e.target.classList.contains('modal-close')) modal.classList.remove('active-modal'); }); }
-    document.getElementById('modalImage').src = img;
-    document.getElementById('modalCaption').innerHTML = `<strong>${title}</strong> — ${desc}`;
-    modal.classList.add('active-modal');
-}
+
+// openModal больше не нужен — слайдер заменяет его
+function openModal() {}
 
 function initStarRating() {
     const stars = document.querySelectorAll('#starRating i');
