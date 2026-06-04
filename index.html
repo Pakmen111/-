@@ -1123,7 +1123,8 @@ function renderMenu() {
 function setupMenuSearch() {
     const input = document.getElementById('menuSearch');
     const clear = document.getElementById('menuSearchClear');
-    if (!input) return;
+    if (!input || input._searchReady) return;
+    input._searchReady = true;
     input.addEventListener('input', () => {
         currentSearch = input.value;
         clear.classList.toggle('visible', currentSearch.length > 0);
@@ -1801,6 +1802,7 @@ function openTab(id, tab) {
         try { tab.classList.add('active'); } catch(e) {}
     }
     if (id === 'gallery') renderGallery();
+    if (id === 'menu') { renderMenu(); setTimeout(setupMenuSearch, 0); }
     if (id === 'admin') {
         renderAdminPanel();
         setTimeout(() => {
