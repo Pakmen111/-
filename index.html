@@ -369,7 +369,7 @@
         /* Подвал */
         .site-footer { background: #2c2418; color: rgba(255,255,255,0.75); margin-top: 3rem; }
         .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2.5rem; max-width: 1300px; margin: 0 auto; padding: 3rem 2rem 2rem; }
-        .footer-brand .logo-text { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: white; font-weight: 700; margin-bottom: 0.8rem; }
+        .footer-brand .logo-text { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: white; font-weight: 700; margin-bottom: 0.8rem; display: block; text-align: left; padding-left: 0; }
         .footer-brand p { font-size: 0.88rem; line-height: 1.7; max-width: 260px; }
         .footer-brand .footer-social { display: flex; gap: 0.8rem; margin-top: 1.2rem; }
         .footer-social a { width: 38px; height: 38px; background: rgba(255,255,255,0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.6); transition: all .2s; text-decoration: none; }
@@ -1121,7 +1121,17 @@ function renderReviews() {
         const sh = Array.from({length:5}, (_,i) => `<i class="fas fa-star" style="color:${i<stars?'#f4b942':'#ddd'};font-size:1rem"></i>`).join('');
         return `<div class="swiper-slide"><div class="testimonial-card"><i class="fas fa-quote-left" style="color:#b87c4f;font-size:1.5rem;margin-bottom:0.8rem;display:block"></i><div style="margin-bottom:0.8rem">${sh}</div><p style="font-style:italic;color:#5c4b32;margin-bottom:1rem">${r.text}</p><h4 style="color:#b87c4f">— ${r.author}</h4></div></div>`;
     }).join('');
-    if (window.reviewsSwiper) window.reviewsSwiper.update();
+    // Пересоздаём свайпер чтобы автоплей заработал со свежими слайдами
+    waitFor(() => typeof Swiper !== 'undefined', () => {
+        if (window.reviewsSwiper) { try { window.reviewsSwiper.destroy(true, true); } catch(e) {} }
+        window.reviewsSwiper = new Swiper('.testimonials-swiper', {
+            loop: reviews.length > 1,
+            autoplay: { delay: 4000, disableOnInteraction: false, pauseOnMouseEnter: true },
+            pagination: { el: '.swiper-pagination', clickable: true },
+            slidesPerView: 1, spaceBetween: 20,
+            breakpoints: { 768: { slidesPerView: Math.min(2, reviews.length) } }
+        });
+    });
 }
 
 function renderContactsReviews() {
@@ -1133,7 +1143,16 @@ function renderContactsReviews() {
         const sh = Array.from({length:5}, (_,i) => `<i class="fas fa-star" style="color:${i<stars?'#f4b942':'#ddd'};font-size:1rem"></i>`).join('');
         return `<div class="swiper-slide"><div class="testimonial-card"><i class="fas fa-quote-left" style="color:#b87c4f;font-size:1.5rem;margin-bottom:0.8rem;display:block"></i><div style="margin-bottom:0.8rem">${sh}</div><p style="font-style:italic;color:#5c4b32;margin-bottom:1rem">${r.text}</p><h4 style="color:#b87c4f">— ${r.author}</h4></div></div>`;
     }).join('');
-    if (window.contactsReviewsSwiper) window.contactsReviewsSwiper.update();
+    waitFor(() => typeof Swiper !== 'undefined', () => {
+        if (window.contactsReviewsSwiper) { try { window.contactsReviewsSwiper.destroy(true, true); } catch(e) {} }
+        window.contactsReviewsSwiper = new Swiper('.contacts-reviews-swiper', {
+            loop: reviews.length > 1,
+            autoplay: { delay: 4500, disableOnInteraction: false, pauseOnMouseEnter: true },
+            pagination: { el: '.contacts-reviews-pagination', clickable: true },
+            slidesPerView: 1, spaceBetween: 20,
+            breakpoints: { 768: { slidesPerView: Math.min(2, reviews.length) } }
+        });
+    });
 }
 
 // ================================================================
@@ -1460,7 +1479,29 @@ function initStarRating() {
 
 function showNotif(msg) { let d = document.createElement('div'); d.className = 'notification'; d.innerHTML = `<i class="fas fa-bell"></i> ${msg}`; document.body.appendChild(d); setTimeout(() => d.remove(), 3000); }
 function initMap() { const m = document.getElementById('map'); if(m && !m.innerHTML) m.innerHTML = `<iframe width="100%" height="100%" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCgG9vJSPmkH1vK9BQd5BfsfOnc1n6Yw6Q&q=Москва+ул.+Гастрономическая+15" allowfullscreen></iframe>`; }
-function initSwiper() { if(typeof Swiper !== 'undefined') { window.reviewsSwiper = new Swiper('.testimonials-swiper', { loop:true, autoplay:{delay:4000}, pagination:{el:'.swiper-pagination',clickable:true}, slidesPerView:1, breakpoints:{768:{slidesPerView:2}} }); window.contactsReviewsSwiper = new Swiper('.contacts-reviews-swiper', { loop:true, autoplay:{delay:4500}, pagination:{el:'.contacts-reviews-pagination',clickable:true}, slidesPerView:1, breakpoints:{768:{slidesPerView:2}} }); } }
+function initSwiper() {
+    if (typeof Swiper === 'undefined') return;
+    // Уничтожаем старые экземпляры если есть
+    if (window.reviewsSwiper) { try { window.reviewsSwiper.destroy(true, true); } catch(e) {} }
+    if (window.contactsReviewsSwiper) { try { window.contactsReviewsSwiper.destroy(true, true); } catch(e) {} }
+
+    window.reviewsSwiper = new Swiper('.testimonials-swiper', {
+        loop: true,
+        autoplay: { delay: 4000, disableOnInteraction: false, pauseOnMouseEnter: true },
+        pagination: { el: '.swiper-pagination', clickable: true },
+        slidesPerView: 1,
+        spaceBetween: 20,
+        breakpoints: { 768: { slidesPerView: 2 } }
+    });
+    window.contactsReviewsSwiper = new Swiper('.contacts-reviews-swiper', {
+        loop: true,
+        autoplay: { delay: 4500, disableOnInteraction: false, pauseOnMouseEnter: true },
+        pagination: { el: '.contacts-reviews-pagination', clickable: true },
+        slidesPerView: 1,
+        spaceBetween: 20,
+        breakpoints: { 768: { slidesPerView: 2 } }
+    });
+}
 
 function setupCategoryFilter() { document.querySelectorAll('.category-icon-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.category-icon-btn').forEach(b => b.classList.remove('active-cat')); btn.classList.add('active-cat'); currentFilter = btn.dataset.cat; renderMenu(); }); }); }
 function setupGalleryFilters() { document.querySelectorAll('.gallery-filter-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.gallery-filter-btn').forEach(b => b.classList.remove('active-gallery-filter')); btn.classList.add('active-gallery-filter'); currentGalleryFilter = btn.dataset.galleryCat; renderGallery(); }); }); }
