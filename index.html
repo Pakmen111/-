@@ -928,7 +928,9 @@ async function dbLoadFresh() {
         specialOffers = (o.data || []).map(x => ({ ...x, discountSuffix: x.discount_suffix, desc: x.description }));
         reviews       = r.data || [];
 
-        if (!menuItems.length)     await seedMenu();
+        // Загружаем сообщения
+        const msgs = await sb.from('messages').select('*').order('created_at', { ascending: false });
+        window._messages = msgs.data || [];
         if (!newsItems.length)     await seedPromotions();
         if (!newsArticles.length)  await seedArticles();
         if (!specialOffers.length) await seedOffers();
@@ -1195,10 +1197,15 @@ function renderContactsReviews() {
 //  ADMIN PANEL
 // ================================================================
 function renderAdminPanel() {
+    const msgs = window._messages || [];
     const adminHtml = `
     <div class="admin-section" style="background:#f0f9f4;border-radius:20px;padding:1rem 1.5rem;margin-bottom:0.5rem;border:1.5px solid #b7e4cc;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.8rem">
         <p style="color:#2a7a5a;font-size:0.9rem;margin:0"><i class="fas fa-database"></i> <strong>Supabase подключён.</strong> Все изменения сохраняются в облачную БД в реальном времени.</p>
         <button class="admin-logout-btn" id="adminLogoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</button>
+    </div>
+
+    <div class="admin-section"><h3>✉️ Сообщения <span style="background:#b87c4f;color:white;font-size:0.75rem;padding:2px 8px;border-radius:20px;margin-left:6px">${msgs.length}</span></h3>
+        <ul id="messagesAdminList" class="admin-list">${msgs.length ? msgs.map(m=>`<li><div><strong>${m.name}</strong> · <span style="color:#b87c4f">${m.email}</span><br><span style="font-size:0.88rem;color:#5c4b32;margin:2px 0;display:block">${m.message}</span><span style="font-size:0.75rem;color:#9b8a76">${new Date(m.created_at).toLocaleString('ru-RU')}</span></div><button class="delete-btn" data-id="${m.id}" data-type="message">🗑️</button></li>`).join('') : '<li style="color:#9b8a76;justify-content:center">Сообщений пока нет</li>'}</ul>
     </div>
 
     <div class="admin-section"><h3>🖼️ Галерея</h3>
@@ -1344,6 +1351,7 @@ function attachAdminEvents() {
     document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
             const id = parseInt(btn.dataset.id), type = btn.dataset.type;
+            if (type === 'message')  { await dbDelete('messages', id); window._messages = (window._messages||[]).filter(m=>m.id!==id); renderAdminPanel(); showNotif('Сообщение удалено'); }
             if (type === 'gallery')  { await dbDelete('gallery_items', id);  galleryData.splice(galleryData.findIndex(g=>g.id===id),1); renderGallery(); renderAdminPanel(); showNotif('Фото удалено'); }
             if (type === 'news')    { await dbDelete('promotions', id);    newsItems     = newsItems.filter(n=>n.id!==id);         renderPromotions();    renderAdminPanel(); showNotif('Акция удалена'); }
             if (type === 'article') { await dbDelete('news_articles', id); newsArticles  = newsArticles.filter(a=>a.id!==id);      renderNewsArticles();  renderAdminPanel(); showNotif('Новость удалена'); }
@@ -1361,9 +1369,10 @@ function attachAdminEvents() {
 // ================================================================
 //  EMAILJS — уведомления о новых бронированиях
 // ================================================================
-const EMAILJS_SERVICE_ID  = 'service_p8puwrw';
-const EMAILJS_TEMPLATE_ID = 'template_9xd8jp9';
-const EMAILJS_PUBLIC_KEY  = 'QJcEGMhL4vBWQHrWX';
+const EMAILJS_SERVICE_ID       = 'service_p8puwrw';
+const EMAILJS_TEMPLATE_ID      = 'template_9xd8jp9';
+const EMAILJS_CONTACT_TEMPLATE = 'template_lyv1f3c';
+const EMAILJS_PUBLIC_KEY       = 'QJcEGMhL4vBWQHrWX';
 
 function initEmailJS() {
     if (typeof emailjs !== 'undefined') {
@@ -1446,15 +1455,32 @@ document.body.addEventListener('submit', async function(e) {
     }
 });
 
-document.getElementById('feedbackForm')?.addEventListener('submit', (e) => {
+document.getElementById('feedbackForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const name = document.getElementById('feedbackName').value, email = document.getElementById('feedbackEmail').value, msg = document.getElementById('feedbackMessage').value;
+    const name  = document.getElementById('feedbackName').value.trim();
+    const email = document.getElementById('feedbackEmail').value.trim();
+    const msg   = document.getElementById('feedbackMessage').value.trim();
     if (!name || !email || !msg) { alert('Заполните все поля'); return; }
     if (!document.getElementById('feedbackConsent')?.checked) { alert('Необходимо согласие на обработку персональных данных'); return; }
+
+    // Сохраняем в Supabase
+    await dbInsert('messages', { name, email, message: msg });
+
+    // Отправляем email через EmailJS
+    if (typeof emailjs !== 'undefined') {
+        try {
+            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_CONTACT_TEMPLATE, {
+                from_name:  name,
+                from_email: email,
+                message:    msg
+            });
+        } catch(err) { console.error('EmailJS contact error:', err); }
+    }
+
     document.getElementById('feedbackForm').reset();
     document.getElementById('feedbackMsg').innerHTML = '<div class="booking-success"><i class="fas fa-check-circle"></i> Сообщение отправлено!</div>';
     setTimeout(() => document.getElementById('feedbackMsg').innerHTML = '', 5000);
-    showNotif(`Спасибо, ${name}!`);
+    showNotif(`Новое сообщение от ${name}`);
 });
 
 // ================================================================
