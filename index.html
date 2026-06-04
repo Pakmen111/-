@@ -1550,11 +1550,12 @@ function openTab(id, tab) {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active-tab'));
     document.getElementById(id).classList.add('active-tab');
     document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
+    if (tab && tab.classList && typeof tab.classList.add === 'function' && tab.classList.add !== (() => {}).toString()) {
+        try { tab.classList.add('active'); } catch(e) {}
+    }
     if (id === 'gallery') renderGallery();
     if (id === 'admin') {
         renderAdminPanel();
-        // Вешаем кнопку выхода после рендера
         setTimeout(() => {
             document.getElementById('adminLogoutBtn')?.addEventListener('click', adminLogout);
         }, 0);
@@ -1567,8 +1568,9 @@ document.getElementById('scrollToBookingBtn')?.addEventListener('click', () => {
 
 document.getElementById('adminFooterLink')?.addEventListener('click', (e) => {
     e.preventDefault();
-    const adminTab = document.querySelector('.tab-btn[data-tab="admin"]');
-    if (adminTab) adminTab.click();
+    const openAdmin = () => openTab('admin', { dataset: { tab: 'admin' }, classList: { add: () => {}, remove: () => {} } });
+    if (isAdminUnlocked()) { openAdmin(); }
+    else { showPasswordModal(openAdmin); }
 });
 
 // ================================================================
