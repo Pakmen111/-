@@ -155,6 +155,14 @@
 
         /* Меню */
         .menu-hero { background: linear-gradient(135deg, #2c2418 0%, #4a3828 100%); border-radius: 32px; padding: 2.5rem; text-align: center; color: white; margin-bottom: 2.5rem; }
+        .menu-search-wrap { position: relative; max-width: 480px; margin: 0 auto 2rem; }
+        .menu-search-wrap i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #b87c4f; font-size: 1rem; pointer-events: none; }
+        .menu-search-input { width: 100%; padding: 14px 44px 14px 46px; border: 1.5px solid #eee0d4; border-radius: 40px; font-family: 'Inter', sans-serif; font-size: 1rem; background: white; outline: none; transition: border-color .2s, box-shadow .2s; box-shadow: 0 4px 14px rgba(0,0,0,0.05); }
+        .menu-search-input:focus { border-color: #b87c4f; box-shadow: 0 4px 20px rgba(184,124,79,0.15); }
+        .menu-search-clear { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #9b8a76; font-size: 1rem; display: none; }
+        .menu-search-clear.visible { display: block; }
+        .menu-no-results { text-align: center; padding: 3rem; background: #fcf8f3; border-radius: 32px; color: #9b8a76; }
+        .menu-no-results i { font-size: 2.5rem; margin-bottom: 0.8rem; display: block; }
         .category-icons { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.2rem; margin-bottom: 2.5rem; }
         .category-icon-btn { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; background: transparent; border: none; cursor: pointer; padding: 0.8rem 1.2rem; border-radius: 60px; transition: all 0.3s; color: #5c4b32; }
         .category-icon-btn i { font-size: 1.8rem; }
@@ -166,6 +174,7 @@
         .menu-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
         .menu-content { padding: 1.3rem 1.5rem 1.5rem; }
         .menu-price { font-size: 1.5rem; font-weight: 800; color: #b87c4f; }
+        .menu-highlight { background: #fff0d4; border-radius: 3px; padding: 0 2px; }
 
         /* Акции / Новости / Спецпредложения */
         .promo-header { background: linear-gradient(135deg, #b87c4f 0%, #e2a072 100%); border-radius: 32px; padding: 2.5rem; text-align: center; color: white; margin-bottom: 2rem; }
@@ -398,7 +407,7 @@
     <!-- ГЛАВНАЯ -->
     <div id="home" class="tab-content active-tab">
         <div class="hero">
-            <img class="hero-video-bg" src="https://media.discordapp.net/attachments/1072023086280491111/1512109369783750847/ComfyUI_temp_otlie_00001_.png?ex=6a22e517&is=6a219397&hm=cf66a3760d3ac001cf86e840972e4178778d23dc57258e23d986c9e48f5236df&=&format=webp&quality=lossless&width=1712&height=856" alt="Итальянский ресторан">
+            <img class="hero-video-bg" src="https://avatars.mds.yandex.net/i?id=50fcdc06bacd4542e321b8d5b0aff052_l-5254479-images-thumbs&n=13" alt="Итальянский ресторан">
             <div class="hero-overlay"></div>
             <div class="hero-content">
                 <h1 class="hero-title">Вкус & Уют</h1>
@@ -511,6 +520,11 @@
     <div id="menu" class="tab-content">
         <div class="container">
             <div class="menu-hero"><h2><i class="fas fa-utensils"></i> Наше меню</h2><p>Гастрономическое путешествие с авторскими блюдами</p></div>
+            <div class="menu-search-wrap">
+                <i class="fas fa-search"></i>
+                <input type="text" class="menu-search-input" id="menuSearch" placeholder="Поиск блюда...">
+                <button class="menu-search-clear" id="menuSearchClear"><i class="fas fa-times"></i></button>
+            </div>
             <div class="category-icons" id="categoryIcons">
                 <button class="category-icon-btn active-cat" data-cat="all"><i class="fas fa-border-all"></i><span>Все</span></button>
                 <button class="category-icon-btn" data-cat="salads"><i class="fas fa-leaf"></i><span>Салаты</span></button>
@@ -898,11 +912,61 @@ async function seedReviews() {
 //  RENDER FUNCTIONS
 // ================================================================
 let currentFilter = 'all';
+let currentSearch = '';
+
+function highlight(text, query) {
+    if (!query) return text;
+    const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark class="menu-highlight">$1</mark>');
+}
+
 function renderMenu() {
-    const filtered = currentFilter === 'all' ? menuItems : menuItems.filter(m => m.category === currentFilter);
     const grid = document.getElementById('menuGrid');
-    if (!filtered.length) { grid.innerHTML = `<div class="empty-menu"><i class="fas fa-utensils" style="font-size:3rem"></i><p>Блюда скоро появятся</p></div>`; return; }
-    grid.innerHTML = filtered.map(item => `<div class="menu-card"><div class="menu-img"><img src="${item.img}" alt="${item.name}"></div><div class="menu-content"><h3 class="menu-title">${item.name}</h3><p style="color:#8a7a68;font-size:0.85rem">${item.desc || item.description || ''}</p><div class="menu-price">${item.price} ₽</div></div></div>`).join('');
+    const q = currentSearch.trim().toLowerCase();
+
+    let filtered = currentFilter === 'all' ? menuItems : menuItems.filter(m => m.category === currentFilter);
+    if (q) filtered = filtered.filter(m =>
+        (m.name || '').toLowerCase().includes(q) ||
+        (m.desc || m.description || '').toLowerCase().includes(q)
+    );
+
+    if (!filtered.length) {
+        grid.innerHTML = q
+            ? `<div class="menu-no-results"><i class="fas fa-search"></i><p>По запросу <strong>«${q}»</strong> ничего не найдено</p><p style="font-size:0.85rem;margin-top:0.4rem">Попробуйте другое название или сбросьте поиск</p></div>`
+            : `<div class="empty-menu"><i class="fas fa-utensils" style="font-size:3rem"></i><p>Блюда скоро появятся</p></div>`;
+        return;
+    }
+
+    grid.innerHTML = filtered.map(item => {
+        const name = highlight(item.name || '', q);
+        const desc = highlight(item.desc || item.description || '', q);
+        return `<div class="menu-card">
+            <div class="menu-img"><img src="${item.img}" alt="${item.name}" loading="lazy"></div>
+            <div class="menu-content">
+                <h3 class="menu-title">${name}</h3>
+                <p style="color:#8a7a68;font-size:0.85rem">${desc}</p>
+                <div class="menu-price">${item.price} ₽</div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function setupMenuSearch() {
+    const input = document.getElementById('menuSearch');
+    const clear = document.getElementById('menuSearchClear');
+    if (!input) return;
+    input.addEventListener('input', () => {
+        currentSearch = input.value;
+        clear.classList.toggle('visible', currentSearch.length > 0);
+        renderMenu();
+    });
+    clear.addEventListener('click', () => {
+        input.value = '';
+        currentSearch = '';
+        clear.classList.remove('visible');
+        input.focus();
+        renderMenu();
+    });
 }
 
 function renderPromotions() {
@@ -1339,7 +1403,7 @@ document.getElementById('scrollToBookingBtn')?.addEventListener('click', () => {
 // ================================================================
 async function init() {
     // 1. Сразу настраиваем UI — не ждём БД
-    setupCategoryFilter(); setupGalleryFilters(); setupTabs(); setupNewsTabs();
+    setupCategoryFilter(); setupGalleryFilters(); setupTabs(); setupNewsTabs(); setupMenuSearch();
     initMap(); initBookingForm();
     showSkeletons(); // показываем скелетоны пока грузится БД
 
