@@ -424,6 +424,8 @@
         @keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-6px)} 40%,80%{transform:translateX(6px)} }
         @media (max-width: 700px) { .hero-title { font-size: 2.2rem; } .timer-block { min-width: 60px; } .timer-number { font-size: 1.3rem; } .tabs-container { flex-direction: column; } .admin-tab-wrapper { margin-left: 0; } .tabs-left { width: 100%; } }
     </style>
+    <!-- EmailJS -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
 
@@ -1322,20 +1324,61 @@ function attachAdminEvents() {
 // ================================================================
 //  BOOKING FORM
 // ================================================================
+// ================================================================
+//  EMAILJS — уведомления о новых бронированиях
+// ================================================================
+const EMAILJS_SERVICE_ID  = 'service_8v2kyxc';
+const EMAILJS_TEMPLATE_ID = 'template_9xd8jp9';
+const EMAILJS_PUBLIC_KEY  = 'QJcEGMhL4vBWQHrWX';
+
+function initEmailJS() {
+    if (typeof emailjs !== 'undefined') {
+        emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+    }
+}
+
+async function sendBookingEmail(booking) {
+    if (typeof emailjs === 'undefined') return;
+    try {
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+            name:   booking.name,
+            phone:  booking.phone,
+            date:   booking.date,
+            time:   booking.time,
+            guests: booking.guests,
+            wishes: booking.wishes || 'Не указаны'
+        });
+        console.log('Уведомление о брони отправлено');
+    } catch (err) {
+        console.error('Ошибка отправки email:', err);
+    }
+}
+
 function initBookingForm() {
-    flatpickr('#resDate', { locale: 'ru', minDate: 'today', dateFormat: 'd.m.Y' });
-    flatpickr('#resTime', { locale: 'ru', enableTime: true, noCalendar: true, dateFormat: 'H:i', minuteIncrement: 15, minTime: '12:00', maxTime: '23:00' });
+    waitFor(() => typeof flatpickr !== 'undefined', () => {
+        flatpickr('#resDate', { locale: 'ru', minDate: 'today', dateFormat: 'd.m.Y' });
+        flatpickr('#resTime', { locale: 'ru', enableTime: true, noCalendar: true, dateFormat: 'H:i', minuteIncrement: 15, minTime: '12:00', maxTime: '23:00' });
+    });
     document.getElementById('incrementGuests')?.addEventListener('click', () => { let v = parseInt(document.getElementById('guestsValue').innerText); if(v<20){document.getElementById('guestsValue').innerText=v+1;document.getElementById('guestsCount').value=v+1;} });
     document.getElementById('decrementGuests')?.addEventListener('click', () => { let v = parseInt(document.getElementById('guestsValue').innerText); if(v>1){document.getElementById('guestsValue').innerText=v-1;document.getElementById('guestsCount').value=v-1;} });
     document.getElementById('reservationForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const name = document.getElementById('guestName').value, phone = document.getElementById('guestPhone').value,
-              date = document.getElementById('resDate').value,   time  = document.getElementById('resTime').value,
-              guests = parseInt(document.getElementById('guestsCount').value), wishes = document.getElementById('specialWishes').value;
+        const name   = document.getElementById('guestName').value;
+        const phone  = document.getElementById('guestPhone').value;
+        const date   = document.getElementById('resDate').value;
+        const time   = document.getElementById('resTime').value;
+        const guests = parseInt(document.getElementById('guestsCount').value);
+        const wishes = document.getElementById('specialWishes').value;
         if (!name || !phone || !date || !time) { alert('Заполните поля'); return; }
+
+        // Сохраняем в Supabase
         const data = await dbInsert('bookings', { name, phone, date, time, guests, wishes });
         if (data) {
             bookings.unshift(data);
+
+            // Отправляем email-уведомление
+            await sendBookingEmail({ name, phone, date, time, guests, wishes });
+
             document.getElementById('reservationForm').reset();
             document.getElementById('bookingMsg').innerHTML = '<div class="booking-success"><i class="fas fa-check-circle"></i> Столик успешно забронирован!</div>';
             setTimeout(() => document.getElementById('bookingMsg').innerHTML = '', 5000);
@@ -1620,7 +1663,7 @@ document.getElementById('adminFooterLink')?.addEventListener('click', (e) => {
 async function init() {
     // 1. Сразу настраиваем UI — не ждём БД
     setupCategoryFilter(); setupGalleryFilters(); setupTabs(); setupNewsTabs(); setupMenuSearch();
-    initMap(); initBookingForm();
+    initMap(); initBookingForm(); initEmailJS();
     showSkeletons(); // показываем скелетоны пока грузится БД
 
     // 2. Грузим данные (из кэша — мгновенно, из Supabase — с прогресс-баром)
