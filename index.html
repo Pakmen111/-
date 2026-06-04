@@ -674,12 +674,24 @@
         <div class="container">
             <div class="contacts-hero"><h2><i class="fas fa-map-marker-alt"></i> Контакты & Отзывы</h2><p>Мы всегда рады видеть вас!</p></div>
             <div class="contacts-grid">
-                <div class="contact-card"><div class="contact-icon"><i class="fas fa-map-pin"></i></div><h3>Адрес</h3><p>г. Москва, ул. Гастрономическая, 15</p></div>
+                <div class="contact-card"><div class="contact-icon"><i class="fas fa-map-pin"></i></div><h3>Адрес</h3><p>г. Екатеринбург, ул. Малышева, 117</p></div>
                 <div class="contact-card"><div class="contact-icon"><i class="fas fa-phone-alt"></i></div><h3>Телефон</h3><p><a href="tel:+74951234567" style="color:#b87c4f;">+7 (495) 123-45-67</a></p></div>
                 <div class="contact-card"><div class="contact-icon"><i class="fas fa-envelope"></i></div><h3>Email</h3><p><a href="mailto:hello@vkus-i-uet.ru" style="color:#b87c4f;">hello@vkus-i-uet.ru</a></p></div>
             </div>
             <div class="work-hours"><h3><i class="far fa-clock"></i> График работы</h3><div class="hours-table"><div class="hours-row"><span>Понедельник</span><span>12:00 - 23:00</span></div><div class="hours-row"><span>Вторник - Четверг</span><span>11:00 - 00:00</span></div><div class="hours-row"><span>Пятница - Суббота</span><span>11:00 - 02:00</span></div><div class="hours-row"><span>Воскресенье</span><span>11:00 - 23:00</span></div></div></div>
-            <div class="map-container" id="map"></div>
+            <!-- Яндекс.Карты -->
+            <div style="margin-bottom: 2rem;">
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; margin-bottom:1rem;">
+                    <h3 style="margin:0"><i class="fas fa-map-marked-alt" style="color:#b87c4f;margin-right:8px"></i>Мы на карте</h3>
+                    <a href="https://yandex.ru/maps/?rtext=~56.838482,60.597616&rtt=auto" target="_blank"
+                       style="display:inline-flex;align-items:center;gap:8px;background:#b87c4f;color:white;text-decoration:none;padding:10px 20px;border-radius:40px;font-weight:600;font-size:0.9rem;transition:all .2s"
+                       onmouseover="this.style.background='#9b623c';this.style.transform='translateY(-2px)'"
+                       onmouseout="this.style.background='#b87c4f';this.style.transform='translateY(0)'">
+                        <i class="fas fa-route"></i> Построить маршрут
+                    </a>
+                </div>
+                <div class="map-container" id="map"></div>
+            </div>
             <div class="social-links"><h3><i class="fas fa-share-alt"></i> Мы в соцсетях</h3><div class="social-icons"><div class="social-icon"><i class="fab fa-instagram"></i></div><div class="social-icon"><i class="fab fa-vk"></i></div><div class="social-icon"><i class="fab fa-telegram"></i></div><div class="social-icon"><i class="fab fa-whatsapp"></i></div></div></div>
             <div class="feedback-form"><h3><i class="fas fa-comment-dots"></i> Свяжитесь с нами</h3><form id="feedbackForm"><div class="feedback-row"><input type="text" id="feedbackName" placeholder="Ваше имя" class="form-group-modern" style="margin-bottom:0;"><input type="email" id="feedbackEmail" placeholder="Email" class="form-group-modern" style="margin-bottom:0;"></div><div class="form-group-modern"><textarea id="feedbackMessage" rows="3" placeholder="Ваше сообщение..."></textarea></div><button type="submit" class="submit-btn" style="width: auto; padding: 12px 32px;"><i class="fas fa-paper-plane"></i> Отправить</button><div id="feedbackMsg"></div></form></div>
 
@@ -751,7 +763,7 @@
             <ul>
                 <li><a href="tel:+74951234567"><i class="fas fa-phone-alt"></i>+7 (495) 123-45-67</a></li>
                 <li><a href="mailto:hello@vkus-i-uet.ru"><i class="fas fa-envelope"></i>hello@vkus-i-uet.ru</a></li>
-                <li><a><i class="fas fa-map-marker-alt"></i>ул. Гастрономическая, 15</a></li>
+                <li><a><i class="fas fa-map-marker-alt"></i>ул. Малышева, 117</a></li>
                 <li><a onclick="document.querySelector('[data-tab=contacts]').click()"><i class="fas fa-comment-alt"></i>Написать нам</a></li>
             </ul>
         </div>
@@ -766,7 +778,7 @@
         </div>
     </div>
     <div class="footer-bottom">
-        © 2025 Ресторан «Вкус & Уют» — Все права защищены &nbsp;·&nbsp; г. Москва, ул. Гастрономическая, 15
+        © 2025 Ресторан «Вкус & Уют» — Все права защищены &nbsp;·&nbsp; г. Екатеринбург, ул. Малышева, 117
         &nbsp;·&nbsp; <a id="adminFooterLink" href="#" style="color:rgba(255,255,255,0.2);text-decoration:none;font-size:0.75rem;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,0.5)'" onmouseout="this.style.color='rgba(255,255,255,0.2)'">Войти</a>
     </div>
 </footer>
@@ -1521,7 +1533,15 @@ function initStarRating() {
 }
 
 function showNotif(msg) { let d = document.createElement('div'); d.className = 'notification'; d.innerHTML = `<i class="fas fa-bell"></i> ${msg}`; document.body.appendChild(d); setTimeout(() => d.remove(), 3000); }
-function initMap() { const m = document.getElementById('map'); if(m && !m.innerHTML) m.innerHTML = `<iframe width="100%" height="100%" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCgG9vJSPmkH1vK9BQd5BfsfOnc1n6Yw6Q&q=Москва+ул.+Гастрономическая+15" allowfullscreen></iframe>`; }
+function initMap() {
+    const m = document.getElementById('map');
+    if (m && !m.innerHTML) {
+        m.innerHTML = `<iframe
+            src="https://yandex.ru/map-widget/v1/?ll=60.597616%2C56.838482&z=16&l=map&pt=60.597616%2C56.838482%2Cpm2rdm&lang=ru_RU"
+            width="100%" height="100%" style="border:0" allowfullscreen loading="lazy"
+            title="Яндекс.Карта — Вкус & Уют, ул. Малышева 117, Екатеринбург"></iframe>`;
+    }
+}
 function initSwiper() {
     if (typeof Swiper === 'undefined') return;
     // Уничтожаем старые экземпляры если есть
