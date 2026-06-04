@@ -207,7 +207,24 @@
         .news-card-date { font-size: 0.78rem; color: #b87c4f; font-weight: 600; }
         .news-card-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: #2c2418; line-height: 1.35; }
         .news-card-text { font-size: 0.88rem; color: #6b5c4a; line-height: 1.6; flex: 1; }
-        .news-read-more { display: inline-flex; align-items: center; gap: 6px; color: #b87c4f; font-weight: 600; font-size: 0.88rem; margin-top: 0.5rem; cursor: default; }
+        .news-read-more { display: inline-flex; align-items: center; gap: 6px; color: #b87c4f; font-weight: 600; font-size: 0.88rem; margin-top: 0.5rem; cursor: pointer; transition: gap .2s; }
+        .news-read-more:hover { gap: 10px; }
+
+        /* Модальное окно новости */
+        .news-modal-bg { position:fixed; inset:0; background:rgba(44,36,24,0.65); z-index:6000; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(6px); padding:1rem; }
+        .news-modal { background:white; border-radius:32px; width:100%; max-width:680px; max-height:90vh; overflow-y:auto; box-shadow:0 40px 80px rgba(0,0,0,0.25); position:relative; }
+        .news-modal-img { width:100%; height:260px; object-fit:cover; border-radius:32px 32px 0 0; display:block; }
+        .news-modal-body { padding:2rem 2.2rem 2.5rem; }
+        .news-modal-meta { display:flex; align-items:center; gap:0.8rem; margin-bottom:1rem; flex-wrap:wrap; }
+        .news-modal-tag { background:#2c2418; color:white; font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; padding:4px 12px; border-radius:20px; }
+        .news-modal-date { font-size:0.82rem; color:#b87c4f; font-weight:600; }
+        .news-modal-title { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:700; color:#2c2418; line-height:1.3; margin-bottom:1.2rem; }
+        .news-modal-text { font-size:0.95rem; color:#5c4b32; line-height:1.85; }
+        .news-modal-close { position:absolute; top:1rem; right:1rem; width:38px; height:38px; background:rgba(0,0,0,0.35); border:none; border-radius:50%; color:white; font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .2s; z-index:1; }
+        .news-modal-close:hover { background:rgba(0,0,0,0.6); }
+        .news-modal-footer { margin-top:1.8rem; padding-top:1.2rem; border-top:1px solid #f0e4d8; display:flex; justify-content:flex-end; }
+        .news-modal-close-btn { background:#b87c4f; color:white; border:none; padding:11px 28px; border-radius:40px; font-size:0.95rem; font-weight:700; cursor:pointer; transition:.2s; }
+        .news-modal-close-btn:hover { background:#9b623c; }
 
         /* Карточки спецпредложений */
         .offer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 2rem; }
@@ -1145,7 +1162,7 @@ function renderNewsArticles() {
                 <div class="news-card-date"><i class="far fa-calendar-alt"></i> ${a.date}</div>
                 <div class="news-card-title">${a.title}</div>
                 <div class="news-card-text">${a.text}</div>
-                <div class="news-read-more"><i class="fas fa-arrow-right"></i> Подробнее</div>
+                <div class="news-read-more" data-id="${a.id}" onclick="openNewsModal(${a.id})"><i class="fas fa-arrow-right"></i> Подробнее</div>
             </div>
         </div>`).join('');
 }
@@ -1797,6 +1814,40 @@ function openTab(id, tab) {
 // ================================================================
 //  ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ
 // ================================================================
+// ================================================================
+//  МОДАЛЬНОЕ ОКНО НОВОСТИ
+// ================================================================
+function openNewsModal(id) {
+    const a = newsArticles.find(x => x.id === id);
+    if (!a) return;
+    document.getElementById('newsModalBg')?.remove();
+    const bg = document.createElement('div');
+    bg.id = 'newsModalBg';
+    bg.className = 'news-modal-bg';
+    bg.innerHTML = `
+        <div class="news-modal">
+            <button class="news-modal-close" onclick="document.getElementById('newsModalBg').remove()"><i class="fas fa-times"></i></button>
+            ${a.img ? `<img class="news-modal-img" src="${a.img}" alt="${a.title}">` : `<div class="news-modal-img" style="height:160px;background:linear-gradient(135deg,#2c2418,#4a3828);border-radius:32px 32px 0 0;display:flex;align-items:center;justify-content:center"><i class="fas fa-newspaper" style="font-size:3rem;color:rgba(255,255,255,0.3)"></i></div>`}
+            <div class="news-modal-body">
+                <div class="news-modal-meta">
+                    <span class="news-modal-tag">${a.tag}</span>
+                    <span class="news-modal-date"><i class="far fa-calendar-alt"></i> ${a.date}</span>
+                </div>
+                <div class="news-modal-title">${a.title}</div>
+                <div class="news-modal-text">${a.text}</div>
+                <div class="news-modal-footer">
+                    <button class="news-modal-close-btn" onclick="document.getElementById('newsModalBg').remove()">Закрыть</button>
+                </div>
+            </div>
+        </div>`;
+    document.body.appendChild(bg);
+    bg.addEventListener('click', e => { if (e.target === bg) bg.remove(); });
+    // Закрытие по Escape
+    document.addEventListener('keydown', function escClose(e) {
+        if (e.key === 'Escape') { bg.remove(); document.removeEventListener('keydown', escClose); }
+    });
+}
+
 function showPrivacyModal() {
     document.getElementById('privacyModalBg')?.remove();
     const bg = document.createElement('div');
