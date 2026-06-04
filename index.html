@@ -236,7 +236,16 @@
         .booking-hero { background: linear-gradient(135deg, #2c2418 0%, #4a3828 100%); border-radius: 32px; padding: 2rem; margin-bottom: 2rem; text-align: center; color: white; }
         .booking-card { background: white; border-radius: 32px; box-shadow: 0 25px 45px rgba(0,0,0,0.1); display: flex; flex-wrap: wrap; overflow: hidden; }
         .booking-form-side { flex: 1.5; padding: 2.5rem; min-width: 280px; }
-        .booking-info-side { flex: 1; background: linear-gradient(145deg, #fef8f0, #fff5ea); padding: 2.5rem; }
+        .booking-info-side { flex: 1; min-width: 280px; background: linear-gradient(160deg, #2c2418 0%, #4a3828 100%); padding: 2.5rem; display: flex; flex-direction: column; gap: 0; }
+        .booking-info-side h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: white; margin-bottom: 1.5rem; }
+        .booking-perk { display: flex; align-items: flex-start; gap: 1rem; padding: 1rem; background: rgba(255,255,255,0.07); border-radius: 20px; margin-bottom: 0.8rem; transition: background .2s; }
+        .booking-perk:hover { background: rgba(255,255,255,0.12); }
+        .booking-perk:last-of-type { margin-bottom: 0; }
+        .booking-perk-icon { width: 44px; height: 44px; min-width: 44px; background: rgba(184,124,79,0.25); border-radius: 14px; display: flex; align-items: center; justify-content: center; }
+        .booking-perk-icon i { font-size: 1.1rem; color: #e2a072; }
+        .booking-perk-text strong { display: block; color: white; font-size: 0.95rem; font-weight: 600; margin-bottom: 2px; }
+        .booking-perk-text span { color: rgba(255,255,255,0.6); font-size: 0.82rem; line-height: 1.4; }
+        .booking-info-note { margin-top: auto; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); font-size: 0.8rem; text-align: center; line-height: 1.5; }
         .form-group-modern { margin-bottom: 1.5rem; }
         .form-group-modern label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2c2418; }
         .form-group-modern input, .form-group-modern select, .form-group-modern textarea { width: 100%; padding: 14px 18px; border: 1.5px solid #eee0d4; border-radius: 24px; font-family: 'Inter', sans-serif; background: #fefcf9; font-size: 1rem; }
@@ -551,7 +560,33 @@
                         <div id="bookingMsg"></div>
                     </form>
                 </div>
-                <div class="booking-info-side"><h3>Почему выбирают нас?</h3><ul style="list-style: none;"><li><i class="fas fa-clock"></i> Бронирование без предоплаты</li><li><i class="fas fa-wine-glass-alt"></i> Приветственный бокал вина</li><li><i class="fas fa-child"></i> Детское меню</li><li><i class="fas fa-parking"></i> Удобная парковка</li></ul></div>
+                <div class="booking-info-side">
+                    <h3><i class="fas fa-star" style="color:#e2a072;margin-right:0.5rem"></i>Почему выбирают нас</h3>
+                    <div class="booking-perk">
+                        <div class="booking-perk-icon"><i class="fas fa-hand-holding-heart"></i></div>
+                        <div class="booking-perk-text"><strong>Без предоплаты</strong><span>Бронируйте без залога — мы доверяем нашим гостям</span></div>
+                    </div>
+                    <div class="booking-perk">
+                        <div class="booking-perk-icon"><i class="fas fa-wine-glass-alt"></i></div>
+                        <div class="booking-perk-text"><strong>Приветственный бокал</strong><span>Бокал вина или сока в подарок при заселении</span></div>
+                    </div>
+                    <div class="booking-perk">
+                        <div class="booking-perk-icon"><i class="fas fa-child"></i></div>
+                        <div class="booking-perk-text"><strong>Детское меню</strong><span>Специальное меню и высокий стул для маленьких гостей</span></div>
+                    </div>
+                    <div class="booking-perk">
+                        <div class="booking-perk-icon"><i class="fas fa-parking"></i></div>
+                        <div class="booking-perk-text"><strong>Парковка рядом</strong><span>Удобная парковка в 2 минутах от входа, бесплатно</span></div>
+                    </div>
+                    <div class="booking-perk">
+                        <div class="booking-perk-icon"><i class="fas fa-concierge-bell"></i></div>
+                        <div class="booking-perk-text"><strong>Особые пожелания</strong><span>Украсим стол, подготовим сюрприз или тихий уголок</span></div>
+                    </div>
+                    <div class="booking-info-note">
+                        <i class="fas fa-phone-alt" style="margin-right:5px;color:#e2a072"></i>
+                        По вопросам звоните: <a href="tel:+74951234567" style="color:#e2a072;text-decoration:none">+7 (495) 123-45-67</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
