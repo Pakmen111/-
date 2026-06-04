@@ -398,7 +398,7 @@
     <!-- ГЛАВНАЯ -->
     <div id="home" class="tab-content active-tab">
         <div class="hero">
-            <img class="hero-video-bg" src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1600&h=900&fit=crop&q=85" alt="Итальянский ресторан">
+            <img class="hero-video-bg" src="https://images.pexels.com/photos/1581384/pexels-photo-1581384.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop" alt="Итальянский ресторан">
             <div class="hero-overlay"></div>
             <div class="hero-content">
                 <h1 class="hero-title">Вкус & Уют</h1>
@@ -419,7 +419,7 @@
             <!-- О ресторане -->
             <div class="about-section">
                 <div class="about-img">
-                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop" alt="Интерьер ресторана">
+                    <img src="https://images.pexels.com/photos/262047/pexels-photo-262047.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop" alt="Интерьер ресторана">
                 </div>
                 <div class="about-text">
                     <span class="about-tag"><i class="fas fa-info-circle"></i> О нас</span>
@@ -483,7 +483,7 @@
             <!-- Атмосфера -->
             <div class="about-section reverse">
                 <div class="about-img">
-                    <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=600&fit=crop" alt="Блюда ресторана">
+                    <img src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop" alt="Блюда ресторана">
                 </div>
                 <div class="about-text">
                     <span class="about-tag"><i class="fas fa-concierge-bell"></i> Кухня</span>
@@ -719,10 +719,10 @@ let menuItems = [], bookings = [], newsItems = [], newsArticles = [],
     specialOffers = [], reviews = [];
 
 const galleryData = [
-    { id:1, category:'interior', title:'Основной зал',   desc:'Уютная атмосфера',   img:'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=500&fit=crop' },
-    { id:2, category:'interior', title:'Винный уголок',  desc:'Более 200 сортов',   img:'https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=600&h=500&fit=crop' },
-    { id:3, category:'dishes',   title:'Стейк',          desc:'Мраморная говядина', img:'https://images.unsplash.com/photo-1600891964092-4316c288032e?w=600&h=500&fit=crop' },
-    { id:4, category:'events',   title:'Джазовый вечер', desc:'Живая музыка',        img:'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&h=500&fit=crop' }
+    { id:1, category:'interior', title:'Основной зал',   desc:'Уютная атмосфера',   img:'https://images.pexels.com/photos/262047/pexels-photo-262047.jpeg?auto=compress&cs=tinysrgb&w=600&h=500&fit=crop' },
+    { id:2, category:'interior', title:'Винный уголок',  desc:'Более 200 сортов',   img:'https://images.pexels.com/photos/696218/pexels-photo-696218.jpeg?auto=compress&cs=tinysrgb&w=600&h=500&fit=crop' },
+    { id:3, category:'dishes',   title:'Стейк',          desc:'Мраморная говядина', img:'https://images.pexels.com/photos/1307658/pexels-photo-1307658.jpeg?auto=compress&cs=tinysrgb&w=600&h=500&fit=crop' },
+    { id:4, category:'events',   title:'Джазовый вечер', desc:'Живая музыка',        img:'https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&w=600&h=500&fit=crop' }
 ];
 
 // ================================================================
@@ -853,26 +853,26 @@ async function dbDelete(table, id) {
 // ================================================================
 async function seedMenu() {
     const { data } = await sb.from('menu_items').insert([
-        { name:'Цезарь с креветками', price:690,  category:'salads',   img:'https://images.unsplash.com/photo-1550304943-4f24f54dd0b8?w=400&h=250&fit=crop', description:'Классический соус, пармезан, хрустящие гренки' },
-        { name:'Греческий салат',     price:490,  category:'salads',   img:'https://images.unsplash.com/photo-1546069901-d5bfd2cbfb1f?w=400&h=250&fit=crop', description:'Фета, маслины, свежие овощи' },
-        { name:'Стейк Рибай',         price:1250, category:'hot',      img:'https://images.unsplash.com/photo-1600891964092-4316c288032e?w=400&h=250&fit=crop', description:'Мраморная говядина с розмарином' },
-        { name:'Паста Карбонара',     price:580,  category:'hot',      img:'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400&h=250&fit=crop', description:'Бекон, пармезан, яйцо' },
-        { name:'Тирамису',            price:420,  category:'desserts', img:'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400&h=250&fit=crop', description:'Кофейный десерт с маскарпоне' }
+        { name:'Цезарь с креветками', price:690,  category:'salads',   img:'https://images.pexels.com/photos/2097090/pexels-photo-2097090.jpeg?auto=compress&cs=tinysrgb&w=400&h=250&fit=crop', description:'Классический соус, пармезан, хрустящие гренки' },
+        { name:'Греческий салат',     price:490,  category:'salads',   img:'https://images.pexels.com/photos/1213710/pexels-photo-1213710.jpeg?auto=compress&cs=tinysrgb&w=400&h=250&fit=crop', description:'Фета, маслины, свежие овощи' },
+        { name:'Стейк Рибай',         price:1250, category:'hot',      img:'https://images.pexels.com/photos/1307658/pexels-photo-1307658.jpeg?auto=compress&cs=tinysrgb&w=400&h=250&fit=crop', description:'Мраморная говядина с розмарином' },
+        { name:'Паста Карбонара',     price:580,  category:'hot',      img:'https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&cs=tinysrgb&w=400&h=250&fit=crop', description:'Бекон, пармезан, яйцо' },
+        { name:'Тирамису',            price:420,  category:'desserts', img:'https://images.pexels.com/photos/6880219/pexels-photo-6880219.jpeg?auto=compress&cs=tinysrgb&w=400&h=250&fit=crop', description:'Кофейный десерт с маскарпоне' }
     ]).select();
     menuItems = (data || []).map(x => ({ ...x, desc: x.description }));
 }
 async function seedPromotions() {
     const { data } = await sb.from('promotions').insert([
-        { title:'Счастливые часы', description:'Скидка 20% на все напитки с 16:00 до 18:00', date:'До 31 декабря', code:'HAPPY20',  img:'https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=200&fit=crop' },
-        { title:'День рождения',   description:'Именинникам десерт и шампанское в подарок',  date:'Постоянно',    code:'BIRTHDAY', img:'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=400&h=200&fit=crop' }
+        { title:'Счастливые часы', description:'Скидка 20% на все напитки с 16:00 до 18:00', date:'До 31 декабря', code:'HAPPY20',  img:'https://images.pexels.com/photos/乾杯' },
+        { title:'День рождения',   description:'Именинникам десерт и шампанское в подарок',  date:'Постоянно',    code:'BIRTHDAY', img:'https://images.pexels.com/photos/1729797/pexels-photo-1729797.jpeg?auto=compress&cs=tinysrgb&w=400&h=200&fit=crop' }
     ]).select();
     newsItems = data || [];
 }
 async function seedArticles() {
     const { data } = await sb.from('news_articles').insert([
-        { tag:'Событие', date:'28 мая 2026',  title:'Джазовый фестиваль в «Вкус & Уют»', text:'Каждую пятницу июня приглашаем вас на живые выступления лучших джазовых коллективов города. Начало в 20:00, вход свободный для гостей ресторана.', img:'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=400&h=200&fit=crop' },
-        { tag:'Меню',    date:'15 мая 2026',  title:'Новое летнее меню от шефа',          text:'Шеф-повар Марко Бруно представил обновлённое летнее меню с акцентом на свежие овощи, морепродукты и авторские десерты с ягодами.', img:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=200&fit=crop' },
-        { tag:'Новость', date:'3 мая 2026',   title:'Открытие летней террасы',            text:'Рады объявить об открытии уютной летней террасы с видом на сад. Вместимость — 40 гостей. Терраса работает с 11:00 до 23:00.', img:'https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=400&h=200&fit=crop' }
+        { tag:'Событие', date:'28 мая 2026',  title:'Джазовый фестиваль в «Вкус & Уют»', text:'Каждую пятницу июня приглашаем вас на живые выступления лучших джазовых коллективов города. Начало в 20:00, вход свободный для гостей ресторана.', img:'https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&w=400&h=200&fit=crop' },
+        { tag:'Меню',    date:'15 мая 2026',  title:'Новое летнее меню от шефа',          text:'Шеф-повар Марко Бруно представил обновлённое летнее меню с акцентом на свежие овощи, морепродукты и авторские десерты с ягодами.', img:'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=400&h=200&fit=crop' },
+        { tag:'Новость', date:'3 мая 2026',   title:'Открытие летней террасы',            text:'Рады объявить об открытии уютной летней террасы с видом на сад. Вместимость — 40 гостей. Терраса работает с 11:00 до 23:00.', img:'https://images.pexels.com/photos/696218/pexels-photo-696218.jpeg?auto=compress&cs=tinysrgb&w=400&h=200&fit=crop' }
     ]).select();
     newsArticles = data || [];
 }
@@ -1093,7 +1093,7 @@ function attachAdminEvents() {
         const title = document.getElementById('newsTitle').value.trim();
         const description = document.getElementById('newsDesc').value.trim();
         if (!title || !description) return;
-        const row = { title, description, date: document.getElementById('newsDate').value.trim() || 'Постоянно', code: document.getElementById('newsCode').value.trim() || 'PROMO', img: document.getElementById('newsImg').value.trim() || 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=200&fit=crop' };
+        const row = { title, description, date: document.getElementById('newsDate').value.trim() || 'Постоянно', code: document.getElementById('newsCode').value.trim() || 'PROMO', img: document.getElementById('newsImg').value.trim() || 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=400&h=200&fit=crop' };
         const data = await dbInsert('promotions', row);
         if (data) { newsItems.push(data); renderPromotions(); renderAdminPanel(); showNotif('Акция добавлена'); e.target.reset(); }
     });
@@ -1103,7 +1103,7 @@ function attachAdminEvents() {
         const title = document.getElementById('articleTitle').value.trim();
         const text = document.getElementById('articleText').value.trim();
         if (!title || !text) return;
-        const row = { title, text, tag: document.getElementById('articleTag').value.trim() || 'Новость', date: document.getElementById('articleDate').value.trim() || new Date().toLocaleDateString('ru-RU', {day:'numeric',month:'long',year:'numeric'}), img: document.getElementById('articleImg').value.trim() || 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=200&fit=crop' };
+        const row = { title, text, tag: document.getElementById('articleTag').value.trim() || 'Новость', date: document.getElementById('articleDate').value.trim() || new Date().toLocaleDateString('ru-RU', {day:'numeric',month:'long',year:'numeric'}), img: document.getElementById('articleImg').value.trim() || 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=400&h=200&fit=crop' };
         const data = await dbInsert('news_articles', row);
         if (data) { newsArticles.unshift(data); renderNewsArticles(); renderAdminPanel(); showNotif('Новость добавлена'); e.target.reset(); }
     });
