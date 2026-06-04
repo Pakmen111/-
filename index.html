@@ -322,7 +322,7 @@
         /* Подвал */
         .site-footer { background: #2c2418; color: rgba(255,255,255,0.75); margin-top: 3rem; }
         .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2.5rem; max-width: 1300px; margin: 0 auto; padding: 3rem 2rem 2rem; }
-        .footer-brand .logo-text { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: white; font-weight: 700; margin-bottom: 0.8rem; }
+        .footer-brand .logo-text { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: white; font-weight: 700; margin-bottom: 0.8rem; display: block; text-align: left; }
         .footer-brand p { font-size: 0.88rem; line-height: 1.7; max-width: 260px; }
         .footer-brand .footer-social { display: flex; gap: 0.8rem; margin-top: 1.2rem; }
         .footer-social a { width: 38px; height: 38px; background: rgba(255,255,255,0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.6); transition: all .2s; text-decoration: none; }
@@ -947,7 +947,11 @@ function renderSpecialOffers() {
 }
 
 function renderReviews() {
-    document.getElementById('reviewsSwiperWrapper').innerHTML = reviews.map(r => `<div class="swiper-slide"><div class="testimonial-card"><i class="fas fa-quote-left"></i><p>${r.text}</p><h4>— ${r.author}</h4></div></div>`).join('');
+    document.getElementById('reviewsSwiperWrapper').innerHTML = reviews.map(r => {
+        const stars = r.stars || 5;
+        const sh = Array.from({length:5}, (_,i) => `<i class="fas fa-star" style="color:${i<stars?'#f4b942':'#ddd'};font-size:1rem"></i>`).join('');
+        return `<div class="swiper-slide"><div class="testimonial-card"><i class="fas fa-quote-left" style="color:#b87c4f;font-size:1.5rem;margin-bottom:0.8rem;display:block"></i><div style="margin-bottom:0.8rem">${sh}</div><p style="font-style:italic;color:#5c4b32;margin-bottom:1rem">${r.text}</p><h4 style="color:#b87c4f">— ${r.author}</h4></div></div>`;
+    }).join('');
     if (window.reviewsSwiper) window.reviewsSwiper.update();
 }
 
