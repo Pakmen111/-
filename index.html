@@ -311,8 +311,28 @@
         .social-icon i { font-size: 1.5rem; color: #b87c4f; }
         .social-icon:hover { background: #b87c4f; transform: translateY(-5px); }
         .social-icon:hover i { color: white; }
-        .feedback-form { background: white; border-radius: 28px; padding: 2rem; margin-top: 2rem; }
-        .feedback-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+        .feedback-form { background: linear-gradient(135deg, #2c2418 0%, #4a3828 100%); border-radius: 36px; padding: 2.5rem; margin-top: 2rem; position: relative; overflow: hidden; }
+        .feedback-form::before { content:''; position:absolute; inset:0; opacity:0.04; background-image:radial-gradient(circle, #fff 1px, transparent 1px); background-size:24px 24px; pointer-events:none; }
+        .feedback-form h3 { font-family:'Playfair Display',serif; font-size:1.5rem; color:white; margin-bottom:0.4rem; position:relative; }
+        .feedback-form .feedback-subtitle { color:rgba(255,255,255,0.6); font-size:0.9rem; margin-bottom:1.8rem; position:relative; }
+        .feedback-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; position:relative; }
+        .feedback-field { position:relative; }
+        .feedback-field i { position:absolute; left:16px; top:50%; transform:translateY(-50%); color:#b87c4f; font-size:0.95rem; pointer-events:none; }
+        .feedback-field.textarea-field i { top:18px; transform:none; }
+        .feedback-input { width:100%; padding:13px 18px 13px 42px; border:1.5px solid rgba(255,255,255,0.12); border-radius:24px; font-family:'Inter',sans-serif; font-size:0.95rem; background:rgba(255,255,255,0.08); color:white; outline:none; transition:all .2s; }
+        .feedback-input::placeholder { color:rgba(255,255,255,0.4); }
+        .feedback-input:focus { border-color:#b87c4f; background:rgba(255,255,255,0.12); }
+        .feedback-textarea { width:100%; padding:13px 18px 13px 42px; border:1.5px solid rgba(255,255,255,0.12); border-radius:24px; font-family:'Inter',sans-serif; font-size:0.95rem; background:rgba(255,255,255,0.08); color:white; outline:none; transition:all .2s; resize:vertical; min-height:110px; }
+        .feedback-textarea::placeholder { color:rgba(255,255,255,0.4); }
+        .feedback-textarea:focus { border-color:#b87c4f; background:rgba(255,255,255,0.12); }
+        .feedback-footer { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; margin-top:1.2rem; position:relative; }
+        .feedback-send-btn { display:inline-flex; align-items:center; gap:8px; background:#b87c4f; color:white; border:none; padding:13px 32px; border-radius:40px; font-size:1rem; font-weight:700; cursor:pointer; transition:all .2s; font-family:'Inter',sans-serif; }
+        .feedback-send-btn:hover { background:#e2a072; transform:translateY(-2px); }
+        .feedback-consent { display:flex; align-items:flex-start; gap:8px; }
+        .feedback-consent input[type=checkbox] { margin-top:3px; accent-color:#b87c4f; width:16px; height:16px; cursor:pointer; flex-shrink:0; }
+        .feedback-consent label { font-size:0.8rem; color:rgba(255,255,255,0.55); line-height:1.5; cursor:pointer; }
+        .feedback-consent label a { color:#e2a072; text-decoration:underline; cursor:pointer; }
+        @media (max-width:600px) { .feedback-row { grid-template-columns:1fr; } .feedback-footer { flex-direction:column; align-items:flex-start; } }
 
         /* Админка */
         .admin-panel { background: white; border-radius: 32px; padding: 2rem; box-shadow: 0 12px 30px rgba(0,0,0,0.08); }
@@ -714,7 +734,34 @@
                 <div class="map-container" id="map"></div>
             </div>
             <div class="social-links"><h3><i class="fas fa-share-alt"></i> Мы в соцсетях</h3><div class="social-icons"><div class="social-icon"><i class="fab fa-instagram"></i></div><div class="social-icon"><i class="fab fa-vk"></i></div><div class="social-icon"><i class="fab fa-telegram"></i></div><div class="social-icon"><i class="fab fa-whatsapp"></i></div></div></div>
-            <div class="feedback-form"><h3><i class="fas fa-comment-dots"></i> Свяжитесь с нами</h3><form id="feedbackForm"><div class="feedback-row"><input type="text" id="feedbackName" placeholder="Ваше имя" class="form-group-modern" style="margin-bottom:0;"><input type="email" id="feedbackEmail" placeholder="Email" class="form-group-modern" style="margin-bottom:0;"></div><div class="form-group-modern"><textarea id="feedbackMessage" rows="3" placeholder="Ваше сообщение..."></textarea></div><button type="submit" class="submit-btn" style="width: auto; padding: 12px 32px;"><i class="fas fa-paper-plane"></i> Отправить</button><div class="consent-wrap" style="margin-top:0.8rem"><input type="checkbox" id="feedbackConsent"><label for="feedbackConsent">Я согласен(а) с <a onclick="showPrivacyModal()">политикой обработки персональных данных</a></label></div><div id="feedbackMsg"></div></form></div>
+            <div class="feedback-form">
+                <h3><i class="fas fa-paper-plane" style="color:#e2a072;margin-right:0.5rem"></i>Свяжитесь с нами</h3>
+                <p class="feedback-subtitle">Напишите нам — ответим в течение нескольких часов</p>
+                <form id="feedbackForm">
+                    <div class="feedback-row">
+                        <div class="feedback-field">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="feedbackName" class="feedback-input" placeholder="Ваше имя">
+                        </div>
+                        <div class="feedback-field">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="feedbackEmail" class="feedback-input" placeholder="Email">
+                        </div>
+                    </div>
+                    <div class="feedback-field textarea-field">
+                        <i class="fas fa-comment-alt"></i>
+                        <textarea id="feedbackMessage" class="feedback-textarea" rows="4" placeholder="Ваше сообщение..."></textarea>
+                    </div>
+                    <div class="feedback-footer">
+                        <button type="submit" class="feedback-send-btn"><i class="fas fa-paper-plane"></i> Отправить</button>
+                        <div class="feedback-consent">
+                            <input type="checkbox" id="feedbackConsent">
+                            <label for="feedbackConsent">Я согласен(а) с <a onclick="showPrivacyModal()">политикой обработки персональных данных</a></label>
+                        </div>
+                    </div>
+                    <div id="feedbackMsg" style="margin-top:1rem"></div>
+                </form>
+            </div>
 
             <!-- ОТЗЫВЫ В КОНТАКТАХ -->
             <div style="background: #fcf6ef; border-radius: 40px; padding: 2rem 1rem; margin-top: 2rem;">
