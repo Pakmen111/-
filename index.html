@@ -398,7 +398,7 @@
     <!-- ГЛАВНАЯ -->
     <div id="home" class="tab-content active-tab">
         <div class="hero">
-            <img class="hero-video-bg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Miramare_castle_interior_-_stube.jpg/1280px-Miramare_castle_interior_-_stube.jpg" alt="Итальянский ресторан">
+            <img class="hero-video-bg" src="https://placehold.co/1600x900/2c2418/b87c4f?text=Вкус+и+Уют" alt="Итальянский ресторан">
             <div class="hero-overlay"></div>
             <div class="hero-content">
                 <h1 class="hero-title">Вкус & Уют</h1>
@@ -419,7 +419,7 @@
             <!-- О ресторане -->
             <div class="about-section">
                 <div class="about-img">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Portofino_at_Universal_Orlando.jpg/1280px-Portofino_at_Universal_Orlando.jpg" alt="Интерьер ресторана">
+                    <img src="https://placehold.co/800x600/4a3828/e2a072?text=Интерьер" alt="Интерьер ресторана">
                 </div>
                 <div class="about-text">
                     <span class="about-tag"><i class="fas fa-info-circle"></i> О нас</span>
@@ -483,7 +483,7 @@
             <!-- Атмосфера -->
             <div class="about-section reverse">
                 <div class="about-img">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Spaghetti_bolognese_%28hozinja%29.jpg/1280px-Spaghetti_bolognese_%28hozinja%29.jpg" alt="Блюда ресторана">
+                    <img src="https://placehold.co/800x600/4a3828/e2a072?text=Кухня" alt="Блюда ресторана">
                 </div>
                 <div class="about-text">
                     <span class="about-tag"><i class="fas fa-concierge-bell"></i> Кухня</span>
@@ -719,10 +719,10 @@ let menuItems = [], bookings = [], newsItems = [], newsArticles = [],
     specialOffers = [], reviews = [];
 
 const galleryData = [
-    { id:1, category:'interior', title:'Основной зал',   desc:'Уютная атмосфера',   img:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Portofino_at_Universal_Orlando.jpg/800px-Portofino_at_Universal_Orlando.jpg' },
-    { id:2, category:'interior', title:'Винный уголок',  desc:'Более 200 сортов',   img:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Rooftop_bar.jpg/800px-Rooftop_bar.jpg' },
-    { id:3, category:'dishes',   title:'Стейк',          desc:'Мраморная говядина', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Steak_01_bg_083004.jpg/800px-Steak_01_bg_083004.jpg' },
-    { id:4, category:'events',   title:'Джазовый вечер', desc:'Живая музыка',        img:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Jazz_band_at_Turku_Market_Square%2C_2013.jpg/800px-Jazz_band_at_Turku_Market_Square%2C_2013.jpg' }
+    { id:1, category:'interior', title:'Основной зал',   desc:'Уютная атмосфера',   img:'https://placehold.co/600x500/3a2c1e/d4956a?text=Зал' },
+    { id:2, category:'interior', title:'Винный уголок',  desc:'Более 200 сортов',   img:'https://placehold.co/600x500/1e1410/c8804a?text=Винный+уголок' },
+    { id:3, category:'dishes',   title:'Стейк',          desc:'Мраморная говядина', img:'https://placehold.co/600x500/3a1a0a/e8906a?text=Стейк' },
+    { id:4, category:'events',   title:'Джазовый вечер', desc:'Живая музыка',        img:'https://placehold.co/600x500/1a1a2e/9090c0?text=Джаз' }
 ];
 
 // ================================================================
@@ -853,26 +853,26 @@ async function dbDelete(table, id) {
 // ================================================================
 async function seedMenu() {
     const { data } = await sb.from('menu_items').insert([
-        { name:'Цезарь с креветками', price:690,  category:'salads',   img:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/FruitAndVeggie_saladbowl.jpg/640px-FruitAndVeggie_saladbowl.jpg', description:'Классический соус, пармезан, хрустящие гренки' },
-        { name:'Греческий салат',     price:490,  category:'salads',   img:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Greek_salad_-_Flickr_-_Takeaway.jpg/640px-Greek_salad_-_Flickr_-_Takeaway.jpg', description:'Фета, маслины, свежие овощи' },
-        { name:'Стейк Рибай',         price:1250, category:'hot',      img:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Steak_01_bg_083004.jpg/640px-Steak_01_bg_083004.jpg', description:'Мраморная говядина с розмарином' },
-        { name:'Паста Карбонара',     price:580,  category:'hot',      img:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Spaghetti_bolognese_%28hozinja%29.jpg/640px-Spaghetti_bolognese_%28hozinja%29.jpg', description:'Бекон, пармезан, яйцо' },
-        { name:'Тирамису',            price:420,  category:'desserts', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Tiramisu_-_Raffaele_Diomede.jpg/640px-Tiramisu_-_Raffaele_Diomede.jpg', description:'Кофейный десерт с маскарпоне' }
+        { name:'Цезарь с креветками', price:690,  category:'salads',   img:'https://placehold.co/400x250/2a4020/80b060?text=Цезарь', description:'Классический соус, пармезан, хрустящие гренки' },
+        { name:'Греческий салат',     price:490,  category:'salads',   img:'https://placehold.co/400x250/1a3040/6090b0?text=Греческий', description:'Фета, маслины, свежие овощи' },
+        { name:'Стейк Рибай',         price:1250, category:'hot',      img:'https://placehold.co/400x250/3a1a0a/e8906a?text=Стейк+Рибай', description:'Мраморная говядина с розмарином' },
+        { name:'Паста Карбонара',     price:580,  category:'hot',      img:'https://placehold.co/400x250/402010/d08040?text=Карбонара', description:'Бекон, пармезан, яйцо' },
+        { name:'Тирамису',            price:420,  category:'desserts', img:'https://placehold.co/400x250/3a2818/c09060?text=Тирамису', description:'Кофейный десерт с маскарпоне' }
     ]).select();
     menuItems = (data || []).map(x => ({ ...x, desc: x.description }));
 }
 async function seedPromotions() {
     const { data } = await sb.from('promotions').insert([
-        { title:'Счастливые часы', description:'Скидка 20% на все напитки с 16:00 до 18:00', date:'До 31 декабря', code:'HAPPY20',  img:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Cocktail_background.jpg/640px-Cocktail_background.jpg' },
-        { title:'День рождения',   description:'Именинникам десерт и шампанское в подарок',  date:'Постоянно',    code:'BIRTHDAY', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/A_small_cup_of_coffee.JPG/640px-A_small_cup_of_coffee.JPG' }
+        { title:'Счастливые часы', description:'Скидка 20% на все напитки с 16:00 до 18:00', date:'До 31 декабря', code:'HAPPY20',  img:'https://placehold.co/400x200/1a0a2a/c080e0?text=Напитки' },
+        { title:'День рождения',   description:'Именинникам десерт и шампанское в подарок',  date:'Постоянно',    code:'BIRTHDAY', img:'https://placehold.co/400x200/2a1040/e080c0?text=День+рождения' }
     ]).select();
     newsItems = data || [];
 }
 async function seedArticles() {
     const { data } = await sb.from('news_articles').insert([
-        { tag:'Событие', date:'28 мая 2026',  title:'Джазовый фестиваль в «Вкус & Уют»', text:'Каждую пятницу июня приглашаем вас на живые выступления лучших джазовых коллективов города. Начало в 20:00, вход свободный для гостей ресторана.', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Jazz_band_at_Turku_Market_Square%2C_2013.jpg/640px-Jazz_band_at_Turku_Market_Square%2C_2013.jpg' },
-        { tag:'Меню',    date:'15 мая 2026',  title:'Новое летнее меню от шефа',          text:'Шеф-повар Марко Бруно представил обновлённое летнее меню с акцентом на свежие овощи, морепродукты и авторские десерты с ягодами.', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Spaghetti_bolognese_%28hozinja%29.jpg/640px-Spaghetti_bolognese_%28hozinja%29.jpg' },
-        { tag:'Новость', date:'3 мая 2026',   title:'Открытие летней террасы',            text:'Рады объявить об открытии уютной летней террасы с видом на сад. Вместимость — 40 гостей. Терраса работает с 11:00 до 23:00.', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Caf%C3%A9_de_Flore_-_Outside.jpg/640px-Caf%C3%A9_de_Flore_-_Outside.jpg' }
+        { tag:'Событие', date:'28 мая 2026',  title:'Джазовый фестиваль в «Вкус & Уют»', text:'Каждую пятницу июня приглашаем вас на живые выступления лучших джазовых коллективов города. Начало в 20:00, вход свободный для гостей ресторана.', img:'https://placehold.co/400x200/1a1a2e/9090c0?text=Джаз+фестиваль' },
+        { tag:'Меню',    date:'15 мая 2026',  title:'Новое летнее меню от шефа',          text:'Шеф-повар Марко Бруно представил обновлённое летнее меню с акцентом на свежие овощи, морепродукты и авторские десерты с ягодами.', img:'https://placehold.co/400x250/402010/d08040?text=Карбонара' },
+        { tag:'Новость', date:'3 мая 2026',   title:'Открытие летней террасы',            text:'Рады объявить об открытии уютной летней террасы с видом на сад. Вместимость — 40 гостей. Терраса работает с 11:00 до 23:00.', img:'https://placehold.co/400x200/1a3020/80c080?text=Терраса' }
     ]).select();
     newsArticles = data || [];
 }
@@ -1093,7 +1093,7 @@ function attachAdminEvents() {
         const title = document.getElementById('newsTitle').value.trim();
         const description = document.getElementById('newsDesc').value.trim();
         if (!title || !description) return;
-        const row = { title, description, date: document.getElementById('newsDate').value.trim() || 'Постоянно', code: document.getElementById('newsCode').value.trim() || 'PROMO', img: document.getElementById('newsImg').value.trim() || 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Spaghetti_bolognese_%28hozinja%29.jpg/640px-Spaghetti_bolognese_%28hozinja%29.jpg' };
+        const row = { title, description, date: document.getElementById('newsDate').value.trim() || 'Постоянно', code: document.getElementById('newsCode').value.trim() || 'PROMO', img: document.getElementById('newsImg').value.trim() || 'https://placehold.co/400x250/402010/d08040?text=Карбонара' };
         const data = await dbInsert('promotions', row);
         if (data) { newsItems.push(data); renderPromotions(); renderAdminPanel(); showNotif('Акция добавлена'); e.target.reset(); }
     });
@@ -1103,7 +1103,7 @@ function attachAdminEvents() {
         const title = document.getElementById('articleTitle').value.trim();
         const text = document.getElementById('articleText').value.trim();
         if (!title || !text) return;
-        const row = { title, text, tag: document.getElementById('articleTag').value.trim() || 'Новость', date: document.getElementById('articleDate').value.trim() || new Date().toLocaleDateString('ru-RU', {day:'numeric',month:'long',year:'numeric'}), img: document.getElementById('articleImg').value.trim() || 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Spaghetti_bolognese_%28hozinja%29.jpg/640px-Spaghetti_bolognese_%28hozinja%29.jpg' };
+        const row = { title, text, tag: document.getElementById('articleTag').value.trim() || 'Новость', date: document.getElementById('articleDate').value.trim() || new Date().toLocaleDateString('ru-RU', {day:'numeric',month:'long',year:'numeric'}), img: document.getElementById('articleImg').value.trim() || 'https://placehold.co/400x250/402010/d08040?text=Карбонара' };
         const data = await dbInsert('news_articles', row);
         if (data) { newsArticles.unshift(data); renderNewsArticles(); renderAdminPanel(); showNotif('Новость добавлена'); e.target.reset(); }
     });
