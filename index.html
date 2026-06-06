@@ -1036,7 +1036,7 @@ async function dbDelete(table, id) {
 // ================================================================
 async function seedMenu() {
     const { data } = await sb.from('menu_items').insert([
-        { name:'Цезарь с креветками', price:690,  category:'salads',   img:'https://placehold.co/400x250/2a4020/80b060?text=Цезарь', description:'Классический соус, пармезан, хрустящие гренки' },
+        { name:'Цезарь с креветками', price:690,  category:'salads',   img:'https://zvenpizza.ru/wp-content/uploads/2022/06/1627056503_24-p-salat-tsezar-s-krevetkami-krasivaya-podach-24.jpg', description:'Классический соус, пармезан, хрустящие гренки' },
         { name:'Греческий салат',     price:490,  category:'salads',   img:'https://placehold.co/400x250/1a3040/6090b0?text=Греческий', description:'Фета, маслины, свежие овощи' },
         { name:'Стейк Рибай',         price:1250, category:'hot',      img:'https://placehold.co/400x250/3a1a0a/e8906a?text=Стейк+Рибай', description:'Мраморная говядина с розмарином' },
         { name:'Паста Карбонара',     price:580,  category:'hot',      img:'https://placehold.co/400x250/402010/d08040?text=Карбонара', description:'Бекон, пармезан, яйцо' },
