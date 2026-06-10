@@ -793,6 +793,9 @@
                                 <input type="text" id="contactReviewAuthor" placeholder="Ваше имя" style="width:100%; padding:14px 18px; border:1.5px solid #eee0d4; border-radius:24px; font-family:'Inter',sans-serif; background:#fefcf9; font-size:1rem;">
                             </div>
                             <div class="form-group-modern" style="margin-bottom:0;">
+                                <input type="tel" id="contactReviewPhone" placeholder="Ваш телефон (+7...)" style="width:100%; padding:14px 18px; border:1.5px solid #eee0d4; border-radius:24px; font-family:'Inter',sans-serif; background:#fefcf9; font-size:1rem;">
+                            </div>
+                            <div class="form-group-modern" style="margin-bottom:0;">
                                 <div style="display:flex; gap:0.4rem; align-items:center; padding:14px 18px; border:1.5px solid #eee0d4; border-radius:24px; background:#fefcf9;">
                                     <span style="font-size:0.9rem; color:#5c4b32; font-weight:600;">Оценка:</span>
                                     <div id="starRating" style="display:flex; gap:4px; cursor:pointer;">
@@ -1527,21 +1530,58 @@ function initBookingForm() {
 // ================================================================
 //  CONTACT REVIEW FORM
 // ================================================================
+// Маска телефона для формы отзыва
+const reviewPhoneInput = document.getElementById('contactReviewPhone');
+if (reviewPhoneInput) {
+    reviewPhoneInput.addEventListener('input', function() {
+        let val = this.value.replace(/\D/g, '');
+        if (val.startsWith('8')) val = '7' + val.slice(1);
+        if (!val.startsWith('7')) val = '7' + val;
+        val = val.slice(0, 11);
+        let fmt = '+7';
+        if (val.length > 1) fmt += ' (' + val.slice(1, 4);
+        if (val.length >= 4) fmt += ') ' + val.slice(4, 7);
+        if (val.length >= 7) fmt += '-' + val.slice(7, 9);
+        if (val.length >= 9) fmt += '-' + val.slice(9, 11);
+        this.value = fmt;
+    });
+}
+
 document.body.addEventListener('submit', async function(e) {
     if (e.target.id === 'contactReviewForm') {
         e.preventDefault();
         const author = document.getElementById('contactReviewAuthor').value.trim() || 'Гость';
+        const phone  = document.getElementById('contactReviewPhone').value.trim();
         const text   = document.getElementById('contactReviewText').value.trim();
         const stars  = parseInt(document.getElementById('contactReviewStars').value) || 5;
-        if (!text) { alert('Напишите отзыв'); return; }
-        const data = await dbInsert('reviews', { author, text, stars });
+        const msgEl  = document.getElementById('contactReviewMsg');
+
+        if (!phone) {
+            msgEl.innerHTML = '<div style="color:#c0392b; margin-top:0.8rem; font-size:0.95rem;"><i class="fas fa-exclamation-circle"></i> Укажите номер телефона</div>';
+            return;
+        }
+        if (!text) {
+            msgEl.innerHTML = '<div style="color:#c0392b; margin-top:0.8rem; font-size:0.95rem;"><i class="fas fa-exclamation-circle"></i> Напишите текст отзыва</div>';
+            return;
+        }
+
+        // Проверяем: нет ли уже отзыва с таким телефоном
+        const { data: existing } = await sb.from('reviews').select('id').eq('phone', phone).limit(1);
+        if (existing && existing.length > 0) {
+            msgEl.innerHTML = '<div style="color:#c0392b; margin-top:0.8rem; font-size:0.95rem;"><i class="fas fa-ban"></i> Вы уже оставляли отзыв с этого номера телефона</div>';
+            setTimeout(() => { if(msgEl) msgEl.innerHTML = ''; }, 5000);
+            return;
+        }
+
+        // Сохраняем отзыв с телефоном
+        const data = await dbInsert('reviews', { author, phone, text, stars });
         if (data) {
             reviews.unshift(data);
             renderReviews(); renderContactsReviews(); renderAdminPanel();
             showNotif(`Спасибо, ${author}!`);
             e.target.reset();
-            document.getElementById('contactReviewMsg').innerHTML = '<div class="booking-success" style="margin-top:1rem"><i class="fas fa-check-circle"></i> Отзыв опубликован!</div>';
-            setTimeout(() => { const el = document.getElementById('contactReviewMsg'); if(el) el.innerHTML = ''; }, 4000);
+            msgEl.innerHTML = '<div class="booking-success" style="margin-top:1rem"><i class="fas fa-check-circle"></i> Отзыв опубликован!</div>';
+            setTimeout(() => { if(msgEl) msgEl.innerHTML = ''; }, 4000);
             document.querySelectorAll('#starRating i').forEach(s => s.style.color = '#f4b942');
             document.getElementById('contactReviewStars').value = 5;
         }
